@@ -6,20 +6,25 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
 
 public class FXMLController implements Initializable {
-    
+
     @FXML
-    private Label label;
+    private TilePane test;
     
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-        System.out.println("You clicked me!");
-        label.setText("Hello World!");
-    }
     
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    public void initialize(URL location, ResourceBundle resources) {
+	System.out.println("Dafuq is this?");
+	for(int i=0;i<10;++i) {
+	    System.out.println("Adding stuff");
+	    test.getChildren().add(new ImageView("http://biking.michael-simons.eu/api/bikingPictures/23.jpg"));
+	}
+    }
+    
+    
+    
 }

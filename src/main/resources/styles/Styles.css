@@ -1,3 +1,7 @@
 .button {
     -fx-font-weight: bold;
 }
+
+#test {
+    -fx-background-color: #000;
+}

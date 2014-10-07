@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml" fx:controller="ac.simons.bikingFX.FXMLController">
-    <children>
-        <Button layoutX="126" layoutY="90" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
-        <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
-    </children>
-</AnchorPane>
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ac.simons.bikingFX.FXMLController">
+   <top>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="top" BorderPane.alignment="CENTER" />
+   </top>
+   <left>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="left" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="right" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="bottom" BorderPane.alignment="CENTER" />
+   </bottom>
+   <center>
+      <ScrollPane fitToHeight="true" fitToWidth="true">
+         <content>
+            <TilePane fx:id="test" hgap="5.0" prefTileHeight="113.0" prefTileWidth="150.0" vgap="5.0" BorderPane.alignment="CENTER">
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding></TilePane>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>
