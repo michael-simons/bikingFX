@@ -54,7 +54,7 @@ public class BikingPicture implements Serializable {
 	this.link = new ReadOnlyObjectWrapper<>(this, "link", link);
     }
 
-    public String getSrc() {
+    public final String getSrc() {
 	return src.getValue();
     }
 
@@ -62,7 +62,7 @@ public class BikingPicture implements Serializable {
 	return src;
     }
     
-    public String getLink() {
+    public final String getLink() {
 	return link.getValue();
     }
 
