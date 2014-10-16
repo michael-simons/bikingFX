@@ -14,12 +14,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 
 public class FXMLController implements Initializable {
 
     @FXML
-    private TilePane test;
+    private HBox test;
     
     
     @Override
