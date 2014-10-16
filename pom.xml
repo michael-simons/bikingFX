@@ -100,8 +100,8 @@
                             <goal>exec</goal>                            
                         </goals>
                         <configuration>
-                            <executable>${java.home}/bin/java</executable>
-                            <commandlineArgs>${runfx.args}</commandlineArgs>
+                            <executable>${java.home}/bin/java</executable>			    
+                            <commandlineArgs>-Djava.util.logging.config.file="${project.build.directory}/classes/logging.dev.properties" ${runfx.args}</commandlineArgs>			    
                         </configuration>
                     </execution>
                 </executions>  
