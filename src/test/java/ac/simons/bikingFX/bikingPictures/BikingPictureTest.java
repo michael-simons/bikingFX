@@ -30,7 +30,9 @@ public class BikingPictureTest {
 	final JsonReader jsonReader = Json.createReader(BikingPictureTest.class.getResourceAsStream("/bikingPictures/singleBikingPicture.json"));
 	final BikingPicture bikingPicture = BikingPicture.create(jsonReader.readObject());
 	Assert.assertEquals("http://biking.michael-simons.eu/api/bikingPictures/231.jpg", bikingPicture.getSrc());
+	Assert.assertEquals(bikingPicture.getSrc(), bikingPicture.srcProperty().getValue());
 	Assert.assertEquals("https://dailyfratze.de/michael/2005/8/29", bikingPicture.getLink());
+	Assert.assertEquals(bikingPicture.getLink(), bikingPicture.linkProperty().getValue());
     }
     
 }

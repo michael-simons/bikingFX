@@ -17,6 +17,8 @@ package ac.simons.bikingFX.bikingPictures;
 
 import java.io.Serializable;
 import java.util.Objects;
+import javafx.beans.property.Property;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javax.json.JsonObject;
 
 /**
@@ -40,26 +42,34 @@ public class BikingPicture implements Serializable {
     /**
      * URL for the image source
      */
-    private final String src;
+    private final Property<String> src;
 
     /**
      * Arbitrary link to a webpage
      */
-    private final String link;
+    private final Property<String> link;
 
     public BikingPicture(String src, String link) {
-	this.src = src;
-	this.link = link;
+	this.src = new ReadOnlyObjectWrapper<>(this, "src", src);
+	this.link = new ReadOnlyObjectWrapper<>(this, "link", link);
     }
 
     public String getSrc() {
+	return src.getValue();
+    }
+
+    public Property<String> srcProperty() {
 	return src;
     }
-
+    
     public String getLink() {
-	return link;
+	return link.getValue();
     }
 
+    public Property<String> linkProperty() {
+	return link;
+    }
+    
     @Override
     public int hashCode() {
 	int hash = 7;
