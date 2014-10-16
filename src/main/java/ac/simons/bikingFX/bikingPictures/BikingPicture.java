@@ -20,6 +20,7 @@ import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 
 /**
  * Represents a biking picture.
@@ -32,7 +33,9 @@ public class BikingPicture implements Serializable {
     /** Base url for biking pictures as String format string */
     public static final String BASE_URL_FORMAT_STRING = "http://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
     
-    public static BikingPicture create(final JsonObject jsonObject) {
+    public static BikingPicture create(final JsonValue jsonValue) {
+	// Assume that this value is really an object...
+	final JsonObject jsonObject = (JsonObject) jsonValue;
 	return new BikingPicture(
 		String.format(BASE_URL_FORMAT_STRING, jsonObject.getJsonNumber("id").longValue()), 
 		jsonObject.getString("link")
