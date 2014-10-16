@@ -9,6 +9,7 @@
             </goals>
             <properties>
                 <runfx.args>-jar "${project.build.directory}/${project.build.finalName}.jar"</runfx.args>
+                <skipTests>true</skipTests>
             </properties>
         </action>
         <action>
