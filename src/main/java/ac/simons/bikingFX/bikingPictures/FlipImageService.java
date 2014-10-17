@@ -27,33 +27,33 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
-
 /**
- *
  * @author Michael J. Simons, 2014-10-17
  */
 public class FlipImageService extends ScheduledService<ImageView> {
     private static final Logger logger = Logger.getLogger(FlipImageService.class.getName()); 
     
     private final ObservableList<BikingPicture> bikingPictures;    
-    private final Random r = new Random(System.currentTimeMillis());
+    private final Random random;
     private final Pane container;    
     
-    public FlipImageService(ObservableList<BikingPicture> bikingPictures, final Pane container) {
+    public FlipImageService(ObservableList<BikingPicture> bikingPictures, final Pane container, final Random random) {
 	this.bikingPictures = bikingPictures;
 	this.container = container;
-	this.setPeriod(Duration.seconds(2));
+	this.random = random;
+	this.setPeriod(Duration.seconds(10));
 	this.setDelay(this.getPeriod());	
 	this.setOnSucceeded(state -> {	    
 	    // Check if images are loaded...
-	    final List<Node> currentImageViews = this.container.getChildren().filtered(node -> node instanceof StackPane);
+	    final List<Node> currentImageViews = this.container.getChildren().filtered(node -> node instanceof StackPane && ((StackPane)node).getChildren().get(0) instanceof ImageView);
 	    if(currentImageViews.size() > 0) {
-		final StackPane pickedNoded = (StackPane) currentImageViews.get(r.nextInt(currentImageViews.size()));
+		final StackPane pickedNoded = (StackPane) currentImageViews.get(this.random.nextInt(currentImageViews.size()));
 		final Node back = (Node)state.getSource().getValue();
 		back.setScaleX(0);
 		pickedNoded.getChildren().add(back);
@@ -86,11 +86,16 @@ public class FlipImageService extends ScheduledService<ImageView> {
 		    .filter(new LoadedImageFilter())
 		    .map(node -> (BikingPicture)((StackPane)node).getChildren().get(0).getUserData())
 		    .collect(Collectors.toSet());		
+		
 		final List<BikingPicture> availableBikingPictures = bikingPictures.filtered(bikingPicture -> !loadedBikingPictures.contains(bikingPicture));
 		if(availableBikingPictures.size() <= 0) {
 		    throw new RuntimeException("No more pictures available");
 		}
-		return CreateImageViewsTask.createImageView(availableBikingPictures.get(r.nextInt(availableBikingPictures.size())));
+		
+		final BikingPicture bikingPicture = availableBikingPictures.get(random.nextInt(availableBikingPictures.size()));
+		final ImageView imageView = new ImageView(new Image(bikingPicture.getSrc(), 150, 113, true, true, false));			
+		imageView.setUserData(bikingPicture);
+		return imageView;
 	    }
 	};
     }
