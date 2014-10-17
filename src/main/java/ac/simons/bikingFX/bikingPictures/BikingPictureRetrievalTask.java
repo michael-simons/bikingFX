@@ -15,14 +15,12 @@
  */
 package ac.simons.bikingFX.bikingPictures;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javax.json.Json;
 import javax.json.JsonReader;
@@ -32,45 +30,32 @@ import javax.json.JsonReader;
  *
  * @author Michael J. Simons, 2014-10-16
  */
-public class BikingPictureRetrievalService extends Service<Collection<BikingPicture>> {
-
+public class BikingPictureRetrievalTask extends Task<Collection<BikingPicture>> {
     private static final String DEFAULT_API_ENDPOINT = "http://biking.michael-simons.eu/api/bikingPictures.json";
+    private static final Logger logger = Logger.getLogger(BikingPictureRetrievalTask.class.getName()); 
     
     private final URL apiEndpoint;
-    
-    public BikingPictureRetrievalService() {
+        
+    public BikingPictureRetrievalTask() {
 	URL hlp = null;
 	try {	    
 	    hlp = new URL(DEFAULT_API_ENDPOINT);
 	} catch(MalformedURLException e) {
 	    // Don't think so...
 	}
-	this.apiEndpoint = hlp;
+	this.apiEndpoint = hlp;	
     }
     
-    public BikingPictureRetrievalService(final URL apiEndpoint)  {
-	this.apiEndpoint = apiEndpoint;
+    public BikingPictureRetrievalTask(final URL apiEndpoint)  {
+	this.apiEndpoint = apiEndpoint;	
     }
     
     @Override
-    protected Task<Collection<BikingPicture>> createTask() {
-	return new Task<Collection<BikingPicture>>() {
-
-	    @Override
-	    protected Collection<BikingPicture> call() throws Exception {
-		return retrieveBikingPictures();
-	    }
-	};
-    }
-    
-    final Collection<BikingPicture> retrieveBikingPictures() throws IOException {
-	final Logger logger = Logger.getLogger(BikingPictureRetrievalService.class.getName());
-	logger.log(Level.FINE, "Start BikingPictureRetrievalService...");
-
+    protected Collection<BikingPicture> call() throws Exception {
 	logger.log(Level.FINE, "Retrieve list of biking pictures...");
 	try(final JsonReader jsonReader = Json.createReader(apiEndpoint.openStream())) {		    		    
 	    logger.log(Level.FINE, "Done.");
 	    return jsonReader.readArray().stream().map(BikingPicture::create).collect(Collectors.toList());		    
-	} 		
+	}
     }
 }

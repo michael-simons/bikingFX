@@ -1,7 +1,7 @@
 package ac.simons.bikingFX;
 
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
-import ac.simons.bikingFX.bikingPictures.BikingPictureRetrievalService;
+import ac.simons.bikingFX.bikingPictures.BikingPictureRetrievalTask;
 import ac.simons.bikingFX.bikingPictures.CreateImageViewsTask;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
 import java.net.URL;
@@ -43,12 +43,12 @@ public class FXMLController implements Initializable {
 	    loadPictures();
 	});
 
-	// Start worker to retrieve the list of all available pictures
-	final BikingPictureRetrievalService service = new BikingPictureRetrievalService();	
-	service.setOnSucceeded(event -> {
+	// Start task to retrieve the list of all available pictures
+	final BikingPictureRetrievalTask bikingPictureRetrievalTask = new BikingPictureRetrievalTask();	
+	bikingPictureRetrievalTask.setOnSucceeded(event -> {
 	    bikingPictures.addAll((Collection<BikingPicture>) event.getSource().getValue());
 	});
-	service.start();
+	new Thread(bikingPictureRetrievalTask).start();	
 	
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.test);

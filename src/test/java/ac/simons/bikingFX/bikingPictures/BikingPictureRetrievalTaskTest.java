@@ -17,26 +17,17 @@ package ac.simons.bikingFX.bikingPictures;
 
 import java.io.IOException;
 import java.util.Collection;
-import javafx.concurrent.Task;
 import junit.framework.Assert;
 import org.junit.Test;
 
 /**
  * @author Michael J. Simons, 2014-10-16
  */
-public class BikingPictureRetrievalServiceTest { 
+public class BikingPictureRetrievalTaskTest { 
     @Test
-    public void taskCreationShouldWork() {
-	final BikingPictureRetrievalService service = new BikingPictureRetrievalService(this.getClass().getResource("/bikingPictures/bikingPictures.json"));
-	// Ensure task is created
-	final Task<Collection<BikingPicture>> task = service.createTask();
-	Assert.assertNotNull(task);	
-    }    
-    
-    @Test
-    public void retrievelShouldWork() throws IOException {
-	final BikingPictureRetrievalService service = new BikingPictureRetrievalService(this.getClass().getResource("/bikingPictures/bikingPictures.json"));
-	final Collection<BikingPicture> pictures = service.retrieveBikingPictures();
+    public void taskShouldWork() throws IOException, Exception {
+	final BikingPictureRetrievalTask service = new BikingPictureRetrievalTask(this.getClass().getResource("/bikingPictures/bikingPictures.json"));
+	final Collection<BikingPicture> pictures = service.call();
 	Assert.assertNotNull(pictures);
 	Assert.assertEquals(252, pictures.size());
     }
