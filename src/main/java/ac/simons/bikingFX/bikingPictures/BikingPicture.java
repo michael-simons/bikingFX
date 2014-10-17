@@ -74,7 +74,7 @@ public class BikingPicture implements Serializable {
     @Override
     public int hashCode() {
 	int hash = 7;
-	hash = 19 * hash + Objects.hashCode(this.src);
+	hash = 19 * hash + Objects.hashCode(this.getSrc());
 	return hash;
     }
 
@@ -87,7 +87,7 @@ public class BikingPicture implements Serializable {
 	    return false;
 	}
 	final BikingPicture other = (BikingPicture) obj;
-	if (!Objects.equals(this.src, other.src)) {
+	if (!Objects.equals(this.getSrc(), other.getSrc())) {
 	    return false;
 	}
 	return true;
