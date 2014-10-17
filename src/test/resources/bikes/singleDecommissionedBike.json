@@ -1,0 +1,9 @@
+{
+    "id": 1,
+    "name": "MTB",
+    "color": "CCCCCC",
+    "boughtOn": 1186005600000,
+    "decommissionedOn": 1348956000000,
+    "lastMilage": 6451,
+    "milage": 3450
+}
