@@ -23,6 +23,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -63,18 +64,27 @@ public class CreateImageViewsTask extends Task<ObservableList<ImageView>> {
     protected ObservableList<ImageView> call() throws Exception {
 	int i = 0, remainingNumberOfPictures = bikingPictures.size();
 	int neededViewsLeft = this.numberOfNeededViews;
-	while (neededViewsLeft > 0) {
+	while (neededViewsLeft > 0 && remainingNumberOfPictures > 0) {	    
 	    int rand = r.nextInt(remainingNumberOfPictures);
 	    if (rand < neededViewsLeft) {
 		final ImageView imageView = createImageView(bikingPictures.get(i));			
 		neededViewsLeft--;			
-		Platform.runLater(() -> {
-		    partialResults.get().add(imageView);
-		});		
+		this.addResult(imageView);		
 	    }
 	    remainingNumberOfPictures--;
 	    i++;
 	}
+	while(neededViewsLeft > 0) {	    
+	    this.addResult(new ImageView(new Image(this.getClass().getResourceAsStream("/img/default-biking-picture.jpg"))));
+	    --neededViewsLeft;		    
+	}
+	
 	return partialResults.get();
+    }
+
+    private void addResult(final ImageView imageView) {
+	Platform.runLater(() -> {
+	    partialResults.get().add(imageView);
+	});
     }
 }

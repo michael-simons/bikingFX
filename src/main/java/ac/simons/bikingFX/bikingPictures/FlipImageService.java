@@ -15,9 +15,15 @@
  */
 package ac.simons.bikingFX.bikingPictures;
 
+import ac.simons.bikingFX.FXMLController.LoadedImageFilter;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.animation.ScaleTransition;
+import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
@@ -29,19 +35,23 @@ import javafx.util.Duration;
 
 /**
  *
- * @author Michael J. Simons
+ * @author Michael J. Simons, 2014-10-17
  */
 public class FlipImageService extends ScheduledService<ImageView> {
-    private final List<BikingPicture> bikingPictures;    
-    private final Random r = new Random(System.currentTimeMillis());
+    private static final Logger logger = Logger.getLogger(FlipImageService.class.getName()); 
     
-    public FlipImageService(List<BikingPicture> bikingPictures, final Pane container) {
+    private final ObservableList<BikingPicture> bikingPictures;    
+    private final Random r = new Random(System.currentTimeMillis());
+    private final Pane container;    
+    
+    public FlipImageService(ObservableList<BikingPicture> bikingPictures, final Pane container) {
 	this.bikingPictures = bikingPictures;
-	this.setPeriod(Duration.seconds(5));
+	this.container = container;
+	this.setPeriod(Duration.seconds(2));
 	this.setDelay(this.getPeriod());	
 	this.setOnSucceeded(state -> {	    
 	    // Check if images are loaded...
-	    final List<Node> currentImageViews = container.getChildren().filtered(node -> node instanceof StackPane);
+	    final List<Node> currentImageViews = this.container.getChildren().filtered(node -> node instanceof StackPane);
 	    if(currentImageViews.size() > 0) {
 		final StackPane pickedNoded = (StackPane) currentImageViews.get(r.nextInt(currentImageViews.size()));
 		final Node back = (Node)state.getSource().getValue();
@@ -62,15 +72,26 @@ public class FlipImageService extends ScheduledService<ImageView> {
 		hideFront.play();	
 	    }	    
 	});	
+	this.setOnFailed(state -> logger.log(Level.INFO, "Could not create ImageView: {0}.", state.getSource().getException().getMessage()));
     }
     
     @Override
     protected Task<ImageView> createTask() {
 	return new Task<ImageView>() {
 	    @Override
-	    protected ImageView call() throws Exception {			
-		return CreateImageViewsTask.createImageView(bikingPictures.get(r.nextInt(bikingPictures.size())));
+	    protected ImageView call() throws Exception {		
+		// Create fresh filtered list
+		final Set<BikingPicture> loadedBikingPictures = container
+		    .getChildren().stream()
+		    .filter(new LoadedImageFilter())
+		    .map(node -> (BikingPicture)((StackPane)node).getChildren().get(0).getUserData())
+		    .collect(Collectors.toSet());		
+		final List<BikingPicture> availableBikingPictures = bikingPictures.filtered(bikingPicture -> !loadedBikingPictures.contains(bikingPicture));
+		if(availableBikingPictures.size() <= 0) {
+		    throw new RuntimeException("No more pictures available");
+		}
+		return CreateImageViewsTask.createImageView(availableBikingPictures.get(r.nextInt(availableBikingPictures.size())));
 	    }
 	};
-    }	        
+    }
 }
