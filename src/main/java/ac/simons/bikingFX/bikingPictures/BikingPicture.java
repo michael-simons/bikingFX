@@ -32,15 +32,6 @@ public class BikingPicture implements Serializable {
     
     /** Base url for biking pictures as String format string */
     public static final String BASE_URL_FORMAT_STRING = "http://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
-    
-    public static BikingPicture create(final JsonValue jsonValue) {
-	// Assume that this value is really an object...
-	final JsonObject jsonObject = (JsonObject) jsonValue;
-	return new BikingPicture(
-		String.format(BASE_URL_FORMAT_STRING, jsonObject.getJsonNumber("id").longValue()), 
-		jsonObject.getString("link")
-	);
-    }
 
     /**
      * URL for the image source
@@ -52,9 +43,11 @@ public class BikingPicture implements Serializable {
      */
     private final Property<String> link;
 
-    public BikingPicture(String src, String link) {
-	this.src = new ReadOnlyObjectWrapper<>(this, "src", src);
-	this.link = new ReadOnlyObjectWrapper<>(this, "link", link);
+    public BikingPicture(final JsonValue jsonValue) {
+	final JsonObject jsonObject = (JsonObject) jsonValue;
+	
+	this.src = new ReadOnlyObjectWrapper<>(this, "src", String.format(BASE_URL_FORMAT_STRING, jsonObject.getJsonNumber("id").longValue()));
+	this.link = new ReadOnlyObjectWrapper<>(this, "link", jsonObject.getString("link"));
     }
 
     public final String getSrc() {

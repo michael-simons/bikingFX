@@ -55,7 +55,7 @@ public class BikingPictureRetrievalTask extends Task<Collection<BikingPicture>> 
 	logger.log(Level.FINE, "Retrieve list of biking pictures...");
 	try(final JsonReader jsonReader = Json.createReader(apiEndpoint.openStream())) {		    		    
 	    logger.log(Level.FINE, "Done.");
-	    return jsonReader.readArray().stream().map(BikingPicture::create).collect(Collectors.toList());		    
+	    return jsonReader.readArray().stream().map(BikingPicture::new).collect(Collectors.toList());		    
 	}
     }
 }

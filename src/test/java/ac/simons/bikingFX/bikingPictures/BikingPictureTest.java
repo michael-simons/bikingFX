@@ -28,7 +28,7 @@ public class BikingPictureTest {
     @Test
     public void factoryMethodShouldWork() {
 	final JsonReader jsonReader = Json.createReader(BikingPictureTest.class.getResourceAsStream("/bikingPictures/singleBikingPicture.json"));
-	final BikingPicture bikingPicture = BikingPicture.create(jsonReader.readObject());
+	final BikingPicture bikingPicture = new BikingPicture(jsonReader.readObject());
 	Assert.assertEquals("http://biking.michael-simons.eu/api/bikingPictures/231.jpg", bikingPicture.getSrc());
 	Assert.assertEquals(bikingPicture.getSrc(), bikingPicture.srcProperty().getValue());
 	Assert.assertEquals("https://dailyfratze.de/michael/2005/8/29", bikingPicture.getLink());
