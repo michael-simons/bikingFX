@@ -1,9 +1,15 @@
 package ac.simons.bikingFX;
 
+import ac.simons.bikingFX.bikes.Bike;
+import ac.simons.bikingFX.bikes.BikesRetrievalTask;
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
 import ac.simons.bikingFX.bikingPictures.BikingPictureRetrievalTask;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
+import ac.simons.bikingFX.renderer.ColorTableCell;
+import ac.simons.bikingFX.renderer.LocalDateTableCell;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -19,10 +25,16 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+
+import static java.time.format.FormatStyle.MEDIUM;
 
 public class FXMLController implements Initializable {
     
@@ -37,6 +49,20 @@ public class FXMLController implements Initializable {
     @FXML
     private HBox test;
 
+    @FXML
+    private TableView<Bike> viewBikes;
+    @FXML
+    private TableColumn<Bike, String> viewBikeName;
+    @FXML
+    private TableColumn<Bike, Color> viewBikeColor;
+    @FXML
+    private TableColumn<Bike, LocalDate> viewBikeBoughtOn;
+    @FXML
+    private TableColumn<Bike, LocalDate> viewBikeDecommissionedOn;
+    @FXML
+    private TableColumn<Bike, Integer> viewBikeMilage;
+    
+    
     private final ObservableList<BikingPicture> bikingPictures = FXCollections.observableArrayList();   
     private final Random random = new Random(System.currentTimeMillis());
     
@@ -50,6 +76,7 @@ public class FXMLController implements Initializable {
 		loadPictures();		
 	    }
 	});	
+	
 	
 	// Load more images when size changes
 	test.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -65,6 +92,18 @@ public class FXMLController implements Initializable {
 	
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.test, this.random);
+	
+	final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofLocalizedDate(MEDIUM);
+	
+	viewBikes.setItems(getObservableList());
+	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
+	viewBikeColor.setCellValueFactory(new PropertyValueFactory<>("color"));
+	viewBikeColor.setCellFactory(ColorTableCell::create);
+	viewBikeBoughtOn.setCellValueFactory(new PropertyValueFactory<>("boughtOn"));
+	viewBikeBoughtOn.setCellFactory(LocalDateTableCell::create);
+	viewBikeDecommissionedOn.setCellValueFactory(new PropertyValueFactory<>("decommissionedOn"));	
+	viewBikeDecommissionedOn.setCellFactory(LocalDateTableCell::create);
+	viewBikeMilage.setCellValueFactory(new PropertyValueFactory<>("milage"));	
     }
 
     final void loadPictures() {
@@ -119,4 +158,15 @@ public class FXMLController implements Initializable {
 	    flipImageService.start();
 	}
     }        
+    
+     ObservableList<Bike> getObservableList()  {
+        final ObservableList<Bike> rv = FXCollections.observableArrayList();
+	
+	final BikesRetrievalTask bikesRetrievalTask = new BikesRetrievalTask();
+	bikesRetrievalTask.setOnSucceeded(state -> {
+	    rv.addAll((Collection<Bike>)state.getSource().getValue());
+	});
+	new Thread(bikesRetrievalTask).start();	
+        return rv;
+    }
 }

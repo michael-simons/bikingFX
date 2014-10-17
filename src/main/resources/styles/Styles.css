@@ -1,7 +1,7 @@
-.button {
-    -fx-font-weight: bold;
+.col-right {
+    -fx-alignment: CENTER-RIGHT;
 }
 
-#test {
-    -fx-background-color: #000;
+.col-center {
+    -fx-alignment: CENTER;
 }
