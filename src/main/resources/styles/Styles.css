@@ -5,3 +5,7 @@
 .col-center {
     -fx-alignment: CENTER;
 }
+
+.biking-pictures-container {
+    -fx-background-color: black;   
+}
