@@ -56,7 +56,7 @@ public class Bike {
 	final JsonValue decommissionedOn = jsonObject.get("decommissionedOn");
 	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDateTime.ofInstant(ofEpochMilli(((JsonNumber) decommissionedOn).longValue()), systemDefault()).toLocalDate());
 	final JsonValue milage = jsonObject.get("lastMilage");
-	this.milage = new SimpleObjectProperty<>(this, "lastMilage", decommissionedOn.getValueType() == NULL ? 0 : ((JsonNumber) milage).intValue());
+	this.milage = new SimpleObjectProperty<>(this, "milage", milage.getValueType() == NULL ? 0 : ((JsonNumber) milage).intValue());
     }
 
     public final String getName() {
