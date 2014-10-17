@@ -69,7 +69,7 @@ public class FlipImageService extends ScheduledService<ImageView> {
 	return new Task<ImageView>() {
 	    @Override
 	    protected ImageView call() throws Exception {			
-		return new ImageView(bikingPictures.get(r.nextInt(bikingPictures.size())).getSrc());					
+		return CreateImageViewsTask.createImageView(bikingPictures.get(r.nextInt(bikingPictures.size())));
 	    }
 	};
     }	        

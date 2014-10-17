@@ -29,7 +29,17 @@ import javafx.scene.image.ImageView;
  * @author Michael J. Simons, 2014-10-17
  */
 public class CreateImageViewsTask extends Task<ObservableList<ImageView>> {
-
+    /**
+     * Static factory method for creating ImageViews from BikingPictures
+     * @param bikingPicture
+     * @return 
+     */
+    public static ImageView createImageView(final BikingPicture bikingPicture) {	
+	final ImageView imageView = new ImageView(bikingPicture.getSrc());			
+	imageView.setUserData(bikingPicture);
+	return imageView;
+    }
+    
     private final ReadOnlyObjectWrapper<ObservableList<ImageView>> partialResults = new ReadOnlyObjectWrapper<>(this, "partialResults", FXCollections.observableArrayList());
 
     private final List<BikingPicture> bikingPictures;
@@ -56,7 +66,7 @@ public class CreateImageViewsTask extends Task<ObservableList<ImageView>> {
 	while (neededViewsLeft > 0) {
 	    int rand = r.nextInt(remainingNumberOfPictures);
 	    if (rand < neededViewsLeft) {
-		final ImageView imageView = new ImageView(bikingPictures.get(i).getSrc());			
+		final ImageView imageView = createImageView(bikingPictures.get(i));			
 		neededViewsLeft--;			
 		Platform.runLater(() -> {
 		    partialResults.get().add(imageView);
