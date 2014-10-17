@@ -72,6 +72,11 @@ public class BikingPicture implements Serializable {
     public Property<String> linkProperty() {
 	return link;
     }
+
+    @Override
+    public String toString() {
+	return "BikingPicture{" + "src=" + getSrc() + ", link=" + getLink() + '}';
+    }
     
     @Override
     public int hashCode() {
