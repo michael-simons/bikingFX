@@ -37,7 +37,10 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
     @Override
     protected void updateItem(LocalDate item, boolean empty) {
 	super.updateItem(item, empty);
-	if (item != null && !empty) {
+	if (item == null || empty) {
+	    setText(null);
+	    setGraphic(null);
+	} else {
 	    setText(localDateFormatter.format(item));
 	}
     }

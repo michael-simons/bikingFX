@@ -35,7 +35,10 @@ public class ColorTableCell<T> extends TableCell<T, Color> {
     @Override
     protected void updateItem(Color item, boolean empty) {
 	super.updateItem(item, empty);
-	if (item != null && !empty) {
+	if (item == null || empty) {
+	    setText(null);
+	    setGraphic(null);
+	} else {
 	    int r = (int)Math.round(item.getRed() * 255.0);
 	    int g = (int)Math.round(item.getGreen() * 255.0);
 	    int b = (int)Math.round(item.getBlue() * 255.0);
