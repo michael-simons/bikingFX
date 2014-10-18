@@ -24,21 +24,21 @@ import ac.simons.bikingFX.renderer.ColorTableCell;
 import ac.simons.bikingFX.renderer.LocalDateTableCell;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Control;
 import javafx.scene.control.ProgressIndicator;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -47,6 +47,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 /**
  * @author Michael J. Simons, 2014-10-07
@@ -116,6 +117,24 @@ public class FXMLController implements Initializable {
 	viewBikeDecommissionedOn.setCellValueFactory(new PropertyValueFactory<>("decommissionedOn"));	
 	viewBikeDecommissionedOn.setCellFactory(LocalDateTableCell::create);
 	viewBikeMilage.setCellValueFactory(new PropertyValueFactory<>("milage"));	
+	
+	viewGalleryPictures.setItems(JsonRetrievalTask.get(GalleryPicture::new, "/galleryPictures.json"));
+	viewGalleryPictureTakenOn.setCellValueFactory(new PropertyValueFactory<>("takenOn"));
+	viewGalleryPictureTakenOn.setCellFactory(LocalDateTableCell::create);
+	viewGalleryPictureDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+	viewGalleryPictureDescription.setCellFactory((TableColumn<GalleryPicture, String> column) -> {
+	    // Bind prefered width of column to width of table minus the first column to fill up the remaining space.
+	    column.prefWidthProperty().bind(column.getTableView().widthProperty().subtract(viewGalleryPictureTakenOn.prefWidthProperty()));
+	    final TableCell<GalleryPicture, String> cell =  new TableCell<>();
+	    final Text text = new Text();
+	    cell.setGraphic(text);
+	    cell.setPrefHeight(Control.USE_COMPUTED_SIZE);
+	    // Bind wrapping width of the text to the actual width of the cell
+	    text.wrappingWidthProperty().bind(cell.widthProperty());
+	    // Update text with content from cell
+	    text.textProperty().bind(cell.itemProperty());	   
+	    return cell;
+	});
     }
 
     final void loadPictures() {

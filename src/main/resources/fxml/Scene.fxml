@@ -29,7 +29,15 @@
                      </columnResizePolicy>
                   </TableView>
                </content></Tab>
-          <Tab text="%tab.gallery" />
+          <Tab text="%tab.gallery">
+               <content>
+                  <TableView fx:id="viewGalleryPictures" prefHeight="200.0" prefWidth="200.0">
+                    <columns>
+                        <TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0" resizable="false" text="%galleryPicture.takenOn" />
+                        <TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false" text="%galleryPicture.description" />
+                    </columns>
+                  </TableView>
+               </content></Tab>
         </tabs>
       </TabPane>
    </children>
