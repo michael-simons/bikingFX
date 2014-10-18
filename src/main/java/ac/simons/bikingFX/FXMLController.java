@@ -19,6 +19,7 @@ import ac.simons.bikingFX.api.JsonRetrievalTask;
 import ac.simons.bikingFX.bikes.Bike;
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
+import ac.simons.bikingFX.gallery.GalleryPicture;
 import ac.simons.bikingFX.renderer.ColorTableCell;
 import ac.simons.bikingFX.renderer.LocalDateTableCell;
 import java.net.URL;
@@ -75,13 +76,22 @@ public class FXMLController implements Initializable {
     @FXML
     private TableColumn<Bike, Integer> viewBikeMilage;
     
-    private final ObservableList<BikingPicture> bikingPictures = FXCollections.observableArrayList();   
+    @FXML
+    private TableView<GalleryPicture> viewGalleryPictures;
+    @FXML
+    private TableColumn<GalleryPicture, LocalDate> viewGalleryPictureTakenOn;
+    @FXML
+    private TableColumn<GalleryPicture, String> viewGalleryPictureDescription;
+          
+    private ObservableList<BikingPicture> bikingPictures;  
+    
     private final Random random = new Random(System.currentTimeMillis());
     
     private FlipImageService flipImageService;
    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+	bikingPictures = JsonRetrievalTask.get(BikingPicture::new, "/bikingPictures.json");
 	// Start loading image views when pictures are available
 	bikingPictures.addListener((Change<? extends BikingPicture> change) -> {
 	    if (!change.getList().isEmpty()) {
@@ -93,18 +103,11 @@ public class FXMLController implements Initializable {
 	test.widthProperty().addListener((observable, oldValue, newValue) -> {
 	    loadPictures();
 	});
-
-	// Start task to retrieve the list of all available pictures
-	final JsonRetrievalTask<BikingPicture> bikingPictureRetrievalTask = new JsonRetrievalTask<>(BikingPicture::new, "/bikingPictures.json");
-	bikingPictureRetrievalTask.setOnSucceeded(event -> {
-	    bikingPictures.addAll((Collection<BikingPicture>) event.getSource().getValue());
-	});
-	new Thread(bikingPictureRetrievalTask).start();	
 	
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.test, this.random);
 	
-	viewBikes.setItems(getObservableList());
+	viewBikes.setItems(JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true"));
 	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
 	viewBikeColor.setCellValueFactory(new PropertyValueFactory<>("color"));
 	viewBikeColor.setCellFactory(ColorTableCell::create);
@@ -166,16 +169,5 @@ public class FXMLController implements Initializable {
 	if(flipImageService != null && !flipImageService.isRunning()) {
 	    flipImageService.start();
 	}
-    }        
-    
-     ObservableList<Bike> getObservableList()  {
-        final ObservableList<Bike> rv = FXCollections.observableArrayList();
-	
-	final JsonRetrievalTask<Bike> bikesRetrievalTask = new JsonRetrievalTask<>(Bike::new, "/bikes.json?all=true");
-	bikesRetrievalTask.setOnSucceeded(state -> {
-	    rv.addAll((Collection<Bike>)state.getSource().getValue());
-	});
-	new Thread(bikesRetrievalTask).start();	
-        return rv;
-    }
+    }    
 }

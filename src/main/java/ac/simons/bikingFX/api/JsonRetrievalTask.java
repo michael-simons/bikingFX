@@ -21,6 +21,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javax.json.Json;
 import javax.json.JsonReader;
@@ -44,11 +46,31 @@ public class JsonRetrievalTask<T> extends Task<Collection<T>> {
 
 	T createObject(final JsonValue jsonValue);
     }
+    
+    /**
+     * Instantiates a new retrieval task, sets up an observable list, starts the task in a
+     * separate thread and fills the list on succeeded state.
+     * 
+     * @param <T>
+     * @param objectFactory
+     * @param endpoint
+     * @return 
+     */
+    public static <T> ObservableList<T> get(final ObjectFactory<T> objectFactory, final String endpoint) {
+	final ObservableList<T> rv = FXCollections.observableArrayList();
+
+	final JsonRetrievalTask<T> bikesRetrievalTask = new JsonRetrievalTask<>(objectFactory, endpoint);
+	bikesRetrievalTask.setOnSucceeded(state -> {
+	    rv.addAll((Collection<T>) state.getSource().getValue());
+	});
+	new Thread(bikesRetrievalTask).start();
+	return rv;
+    }
 
     private final URL apiEndpoint;
     private final ObjectFactory<T> objectFactory;
 
-    public JsonRetrievalTask(final ObjectFactory<T> objectFactory, final String endpoint) {
+    protected JsonRetrievalTask(final ObjectFactory<T> objectFactory, final String endpoint) {
 	URL hlp = null;
 	try {
 	    hlp = new URL(String.format("%s%s", BASE_URL, endpoint));
