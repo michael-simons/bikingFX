@@ -1,15 +1,13 @@
 package ac.simons.bikingFX;
 
+import ac.simons.bikingFX.api.JsonRetrievalTask;
 import ac.simons.bikingFX.bikes.Bike;
-import ac.simons.bikingFX.bikes.BikesRetrievalTask;
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
-import ac.simons.bikingFX.bikingPictures.BikingPictureRetrievalTask;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
 import ac.simons.bikingFX.renderer.ColorTableCell;
 import ac.simons.bikingFX.renderer.LocalDateTableCell;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -34,8 +32,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-import static java.time.format.FormatStyle.MEDIUM;
-
 public class FXMLController implements Initializable {
     
     public static class LoadedImageFilter implements Predicate<Node> {
@@ -43,8 +39,7 @@ public class FXMLController implements Initializable {
 	public boolean test(Node node) {
 	    return node instanceof StackPane && ((StackPane)node).getChildren().get(0).getUserData() != null;
 	}	
-    }
-        
+    }        
 
     @FXML
     private HBox test;
@@ -62,7 +57,6 @@ public class FXMLController implements Initializable {
     @FXML
     private TableColumn<Bike, Integer> viewBikeMilage;
     
-    
     private final ObservableList<BikingPicture> bikingPictures = FXCollections.observableArrayList();   
     private final Random random = new Random(System.currentTimeMillis());
     
@@ -77,14 +71,13 @@ public class FXMLController implements Initializable {
 	    }
 	});	
 	
-	
 	// Load more images when size changes
 	test.widthProperty().addListener((observable, oldValue, newValue) -> {
 	    loadPictures();
 	});
 
 	// Start task to retrieve the list of all available pictures
-	final BikingPictureRetrievalTask bikingPictureRetrievalTask = new BikingPictureRetrievalTask();	
+	final JsonRetrievalTask<BikingPicture> bikingPictureRetrievalTask = new JsonRetrievalTask<>(BikingPicture::new, "/bikingPictures.json");
 	bikingPictureRetrievalTask.setOnSucceeded(event -> {
 	    bikingPictures.addAll((Collection<BikingPicture>) event.getSource().getValue());
 	});
@@ -92,8 +85,6 @@ public class FXMLController implements Initializable {
 	
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.test, this.random);
-	
-	final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofLocalizedDate(MEDIUM);
 	
 	viewBikes.setItems(getObservableList());
 	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -162,7 +153,7 @@ public class FXMLController implements Initializable {
      ObservableList<Bike> getObservableList()  {
         final ObservableList<Bike> rv = FXCollections.observableArrayList();
 	
-	final BikesRetrievalTask bikesRetrievalTask = new BikesRetrievalTask();
+	final JsonRetrievalTask<Bike> bikesRetrievalTask = new JsonRetrievalTask<>(Bike::new, "/bikes.json?all=true");
 	bikesRetrievalTask.setOnSucceeded(state -> {
 	    rv.addAll((Collection<Bike>)state.getSource().getValue());
 	});
