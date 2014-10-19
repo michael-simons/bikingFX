@@ -41,11 +41,9 @@ public class BikingFX extends Application {
 	    Locale.setDefault(Locale.ENGLISH);
 	    bundle = ResourceBundle.getBundle(bundleName, Locale.getDefault());
 	}
-        final Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/root.fxml"), bundle));
-        scene.getStylesheets().add("/css/default.css");
-        
+	
         stage.setTitle("BikingFX");
-        stage.setScene(scene);
+        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/root.fxml"), bundle)));
         stage.show();
     }
 
