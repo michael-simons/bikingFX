@@ -42,7 +42,7 @@
 	<maven.compiler.source>${java.version}</maven.compiler.source>
 	<maven.compiler.target>${java.version}</maven.compiler.target>
 	
-        <mainClass>ac.simons.bikingFX.MainApp</mainClass>
+        <mainClass>ac.simons.bikingFX.BikingFX</mainClass>
     </properties>
 
     <build>

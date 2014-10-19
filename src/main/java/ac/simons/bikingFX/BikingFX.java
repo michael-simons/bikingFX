@@ -23,17 +23,16 @@ import javafx.application.Application;
 import static javafx.application.Application.launch;
 
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
  * @author Michael J. Simons, 2014-10-07
  */
-public class MainApp extends Application {
+public class BikingFX extends Application {
 
     @Override
-    public void start(Stage stage) throws Exception {	
+    public void start(final Stage stage) throws Exception {	
 	ResourceBundle bundle;
 	final String bundleName = "bundles.BikingFX";
 	try {	    
@@ -42,9 +41,7 @@ public class MainApp extends Application {
 	    Locale.setDefault(Locale.ENGLISH);
 	    bundle = ResourceBundle.getBundle(bundleName, Locale.getDefault());
 	}
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"), bundle);
-        
-        Scene scene = new Scene(root);
+        final Scene scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/root.fxml"), bundle));
         scene.getStylesheets().add("/css/default.css");
         
         stage.setTitle("BikingFX");

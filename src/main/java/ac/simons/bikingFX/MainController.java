@@ -53,7 +53,7 @@ import javafx.scene.text.Text;
 /**
  * @author Michael J. Simons, 2014-10-07
  */
-public class FXMLController implements Initializable {
+public class MainController implements Initializable {
     
     public static class LoadedImageFilter implements Predicate<Node> {
 	@Override
