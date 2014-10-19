@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750" prefWidth="900.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ac.simons.bikingFX.FXMLController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="750.0" stylesheets="@../styles/Styles.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ac.simons.bikingFX.FXMLController">
    <children>
       <HBox fx:id="test" alignment="CENTER_LEFT" maxHeight="113.0" minHeight="113.0" prefHeight="113.0" styleClass="biking-pictures-container" />
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
@@ -35,6 +35,7 @@
                     <columns>
                         <TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0" resizable="false" text="%galleryPicture.takenOn" />
                         <TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false" text="%galleryPicture.description" />
+                        <TableColumn fx:id="viewGalleryPictureImage" maxWidth="800.0" minWidth="400.0" prefWidth="400.0" text="%galleryPicture.image" />
                     </columns>
                   </TableView>
                </content></Tab>

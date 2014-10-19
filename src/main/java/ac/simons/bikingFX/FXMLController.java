@@ -20,6 +20,7 @@ import ac.simons.bikingFX.bikes.Bike;
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
 import ac.simons.bikingFX.gallery.GalleryPicture;
+import ac.simons.bikingFX.gallery.GalleryPictureTableCell;
 import ac.simons.bikingFX.renderer.ColorTableCell;
 import ac.simons.bikingFX.renderer.LocalDateTableCell;
 import java.net.URL;
@@ -30,6 +31,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -83,6 +85,8 @@ public class FXMLController implements Initializable {
     private TableColumn<GalleryPicture, LocalDate> viewGalleryPictureTakenOn;
     @FXML
     private TableColumn<GalleryPicture, String> viewGalleryPictureDescription;
+    @FXML
+    private TableColumn<GalleryPicture, Integer> viewGalleryPictureImage;
           
     private ObservableList<BikingPicture> bikingPictures;  
     
@@ -122,9 +126,7 @@ public class FXMLController implements Initializable {
 	viewGalleryPictureTakenOn.setCellValueFactory(new PropertyValueFactory<>("takenOn"));
 	viewGalleryPictureTakenOn.setCellFactory(LocalDateTableCell::new);
 	viewGalleryPictureDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-	viewGalleryPictureDescription.setCellFactory((TableColumn<GalleryPicture, String> column) -> {
-	    // Bind prefered width of column to width of table minus the first column to fill up the remaining space.
-	    column.prefWidthProperty().bind(column.getTableView().widthProperty().subtract(viewGalleryPictureTakenOn.prefWidthProperty()));
+	viewGalleryPictureDescription.setCellFactory((TableColumn<GalleryPicture, String> column) -> {	    
 	    final TableCell<GalleryPicture, String> cell =  new TableCell<>();
 	    final Text text = new Text();
 	    cell.setGraphic(text);
@@ -134,7 +136,22 @@ public class FXMLController implements Initializable {
 	    // Update text with content from cell
 	    text.textProperty().bind(cell.itemProperty());	   
 	    return cell;
-	});
+	});	
+	// Bind prefered width of column to width of table minus the first column to fill up the remaining space.
+	viewGalleryPictureDescription.prefWidthProperty().bind(
+	    viewGalleryPictures.widthProperty()
+		.subtract(viewGalleryPictureTakenOn.prefWidthProperty())
+		.subtract(viewGalleryPictureImage.widthProperty())
+	);
+	
+	viewGalleryPictureImage.setCellValueFactory(new PropertyValueFactory<>("id"));
+	viewGalleryPictureImage.setCellFactory(GalleryPictureTableCell::new);	
+	// Fill the remainig space of the table
+	viewGalleryPictureImage.prefWidthProperty().bind(
+	    viewGalleryPictures.widthProperty()
+		.subtract(viewGalleryPictureTakenOn.widthProperty())
+		.subtract(viewGalleryPictureDescription.widthProperty())
+	);
     }
 
     final void loadPictures() {
