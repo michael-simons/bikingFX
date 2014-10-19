@@ -31,7 +31,10 @@ import static java.time.ZoneId.systemDefault;
  * @author Michael J. Simons, 2014-10-18
  */
 public class GalleryPicture {
-
+    
+    /** ID is needed for URL construction */
+    private final Property<Integer> id;
+    
     private final Property<LocalDate> takenOn;
 
     private final Property<String> filename;
@@ -41,9 +44,18 @@ public class GalleryPicture {
     public GalleryPicture(final JsonValue jsonValue) {
 	final JsonObject jsonObject = (JsonObject) jsonValue;
 
+	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
 	this.takenOn = new ReadOnlyObjectWrapper<>(this, "takenOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("takenOn").longValue()), systemDefault()).toLocalDate());
 	this.filename = new ReadOnlyObjectWrapper<>(this, "filename", jsonObject.getString("filename"));
 	this.description = new SimpleStringProperty(this, "description", jsonObject.getString("description"));
+    }
+
+    public final Property<Integer> getId() {
+	return id;
+    }
+    
+    public Property<Integer> propertyId() {
+	return id;
     }
 
     public final LocalDate getTakenOn() {
