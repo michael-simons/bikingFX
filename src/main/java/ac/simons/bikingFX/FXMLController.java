@@ -111,16 +111,16 @@ public class FXMLController implements Initializable {
 	viewBikes.setItems(JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true"));
 	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
 	viewBikeColor.setCellValueFactory(new PropertyValueFactory<>("color"));
-	viewBikeColor.setCellFactory(ColorTableCell::create);
+	viewBikeColor.setCellFactory(ColorTableCell::new);
 	viewBikeBoughtOn.setCellValueFactory(new PropertyValueFactory<>("boughtOn"));
-	viewBikeBoughtOn.setCellFactory(LocalDateTableCell::create);
+	viewBikeBoughtOn.setCellFactory(LocalDateTableCell::new);
 	viewBikeDecommissionedOn.setCellValueFactory(new PropertyValueFactory<>("decommissionedOn"));	
-	viewBikeDecommissionedOn.setCellFactory(LocalDateTableCell::create);
+	viewBikeDecommissionedOn.setCellFactory(LocalDateTableCell::new);
 	viewBikeMilage.setCellValueFactory(new PropertyValueFactory<>("milage"));	
 	
 	viewGalleryPictures.setItems(JsonRetrievalTask.get(GalleryPicture::new, "/galleryPictures.json"));
 	viewGalleryPictureTakenOn.setCellValueFactory(new PropertyValueFactory<>("takenOn"));
-	viewGalleryPictureTakenOn.setCellFactory(LocalDateTableCell::create);
+	viewGalleryPictureTakenOn.setCellFactory(LocalDateTableCell::new);
 	viewGalleryPictureDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 	viewGalleryPictureDescription.setCellFactory((TableColumn<GalleryPicture, String> column) -> {
 	    // Bind prefered width of column to width of table minus the first column to fill up the remaining space.

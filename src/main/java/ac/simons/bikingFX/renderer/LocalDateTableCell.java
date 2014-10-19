@@ -30,8 +30,7 @@ import static java.time.format.FormatStyle.MEDIUM;
 public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
     private static final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofLocalizedDate(MEDIUM);
         
-    public static <T> LocalDateTableCell<T> create(TableColumn<T, LocalDate> column) {
-	return new LocalDateTableCell<>();
+    public LocalDateTableCell(TableColumn<T, LocalDate> column) {	
     }
     
     @Override

@@ -28,8 +28,7 @@ import javafx.scene.paint.Color;
  * @author Michael J. Simons, 2014-10-17
  */
 public class ColorTableCell<T> extends TableCell<T, Color> {    
-    public static <T> ColorTableCell<T> create(TableColumn<T, Color> column) {
-	return new ColorTableCell<>();
+    public ColorTableCell(TableColumn<T, Color> column) {
     }
     
     @Override
