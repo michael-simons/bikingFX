@@ -45,7 +45,7 @@ public class MainApp extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"), bundle);
         
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
+        scene.getStylesheets().add("/css/default.css");
         
         stage.setTitle("BikingFX");
         stage.setScene(scene);
