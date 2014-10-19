@@ -50,8 +50,8 @@ public class GalleryPicture {
 	this.description = new SimpleStringProperty(this, "description", jsonObject.getString("description"));
     }
 
-    public final Property<Integer> getId() {
-	return id;
+    public final Integer getId() {
+	return id.getValue();
     }
     
     public Property<Integer> propertyId() {
