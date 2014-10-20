@@ -90,7 +90,7 @@ public class RootController implements Initializable {
     private ResourceBundle resources;
     
     @FXML
-    private HBox test;
+    private HBox bikingPicturesContainer;
 
     @FXML
     private TableView<Bike> viewBikes;
@@ -140,12 +140,12 @@ public class RootController implements Initializable {
 	});	
 	
 	// Load more images when size changes
-	test.widthProperty().addListener((observable, oldValue, newValue) -> {
+	bikingPicturesContainer.widthProperty().addListener((observable, oldValue, newValue) -> {
 	    loadPictures();
 	});
 	
 	// Prepare flipservice, depends on container so don't initialise in constructor
-	this.flipImageService = new FlipImageService(this.bikingPictures, this.test, this.random);
+	this.flipImageService = new FlipImageService(this.bikingPictures, this.bikingPicturesContainer, this.random);
 	
 	final MilageChangeListener addMilageController = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
 	// Display a simple popup when adding milage fails
@@ -257,14 +257,14 @@ public class RootController implements Initializable {
     }
     
     final void loadPictures() {
-	final ObservableList<Node> children = test.getChildren();
-	final int numberOfNeededElements = (int) Math.ceil(test.getWidth() / 150.0) - children.size();
+	final ObservableList<Node> children = bikingPicturesContainer.getChildren();
+	final int numberOfNeededElements = (int) Math.ceil(bikingPicturesContainer.getWidth() / 150.0) - children.size();
 	if(bikingPictures.isEmpty() || numberOfNeededElements <= 0) {	    
 	    return;
 	}
 		
 	// Get currently loaded images
-	final Set<BikingPicture> loadedBikingPictures = test
+	final Set<BikingPicture> loadedBikingPictures = bikingPicturesContainer
 		.getChildren().stream()
 		.filter(new LoadedImageFilter())
 		.map(node -> (BikingPicture)((StackPane)node).getChildren().get(0).getUserData())
