@@ -37,6 +37,9 @@ import static javax.json.JsonValue.ValueType.NULL;
  */
 public class Bike {
 
+    /** ID is needed for URL construction */
+    private final Property<Integer> id;
+    
     private final Property<String> name;
 
     private final Property<Color> color;
@@ -50,6 +53,7 @@ public class Bike {
     public Bike(final JsonValue jsonValue) {
 	final JsonObject jsonObject = (JsonObject) jsonValue;
 
+	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
 	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
 	this.color = new SimpleObjectProperty<>(this, "color", Color.web(jsonObject.getString("color")));
 	this.boughtOn = new SimpleObjectProperty<>(this, "boughtOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("boughtOn").longValue()), systemDefault()).toLocalDate());
@@ -57,6 +61,14 @@ public class Bike {
 	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDateTime.ofInstant(ofEpochMilli(((JsonNumber) decommissionedOn).longValue()), systemDefault()).toLocalDate());
 	final JsonValue milage = jsonObject.get("lastMilage");
 	this.milage = new SimpleObjectProperty<>(this, "milage", milage.getValueType() == NULL ? 0 : ((JsonNumber) milage).intValue());
+    }
+    
+    public final Integer getId() {
+	return id.getValue();
+    }
+    
+    public Property<Integer> propertyId() {
+	return id;
     }
 
     public final String getName() {
