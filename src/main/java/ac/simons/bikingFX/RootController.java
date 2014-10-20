@@ -40,7 +40,6 @@ import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -57,7 +56,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -65,7 +63,6 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.converter.IntegerStringConverter;
 
 /**
@@ -74,10 +71,6 @@ import javafx.util.converter.IntegerStringConverter;
 public class RootController implements Initializable {
     
     private static final Logger logger = Logger.getLogger(RootController.class.getName());
-    
-    public enum NotificationType {
-	info, hint, warning, error
-    }
     
     public static class LoadedImageFilter implements Predicate<Node> {
 	@Override
