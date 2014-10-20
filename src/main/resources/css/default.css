@@ -9,3 +9,14 @@
 .biking-pictures-container {
     -fx-background-color: black;   
 }
+
+.error-notification {
+    -fx-background-color: rgba(208, 0, 0, .5);
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-border-color: rgba(192,0,0,0.5); 
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;    
+}
