@@ -71,9 +71,9 @@ import javafx.util.converter.IntegerStringConverter;
 /**
  * @author Michael J. Simons, 2014-10-07
  */
-public class MainController implements Initializable {
+public class RootController implements Initializable {
     
-    private static final Logger logger = Logger.getLogger(MainController.class.getName());
+    private static final Logger logger = Logger.getLogger(RootController.class.getName());
     
     public enum NotificationType {
 	info, hint, warning, error

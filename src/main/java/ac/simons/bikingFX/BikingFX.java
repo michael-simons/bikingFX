@@ -50,7 +50,7 @@ public class BikingFX extends Application {
 	stage.setScene(new Scene(loader.load()));
 
 	// Retrieve controller
-	final MainController mainController = loader.getController();
+	final RootController mainController = loader.getController();
 	mainController.setPrimaryStage(stage);
 
 	stage.show();

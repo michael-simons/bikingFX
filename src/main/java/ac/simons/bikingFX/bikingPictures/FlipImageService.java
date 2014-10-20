@@ -15,7 +15,7 @@
  */
 package ac.simons.bikingFX.bikingPictures;
 
-import ac.simons.bikingFX.MainController.LoadedImageFilter;
+import ac.simons.bikingFX.RootController.LoadedImageFilter;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
