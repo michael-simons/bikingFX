@@ -128,7 +128,8 @@ public class MilageChangeListener implements ChangeListener<Integer> {
 		    passwordConsumer.accept(Optional.empty());
 		    logger.log(Level.WARNING, "Unauthorized request, maybe wrong password?");
 		    throw new RuntimeException(resources.getString("common.wrongPassword"));
-		} // Bad request (invalid milage, date etc.)
+		} 
+		// Bad request (invalid milage, date etc.)
 		else if (code == HttpURLConnection.HTTP_BAD_REQUEST) {
 		    final StringBuilder errorMessage = new StringBuilder();
 		    try (final InputStreamReader reader = new InputStreamReader(connection.getErrorStream())) {
@@ -140,7 +141,8 @@ public class MilageChangeListener implements ChangeListener<Integer> {
 		    }
 		    logger.log(Level.WARNING, "Bad request: {0}", new Object[]{errorMessage});
 		    throw new RuntimeException(errorMessage.toString());
-		} // Dont check the other http states, assume everything else must be ok (like in the angular app ;) )
+		} 
+		// Dont check the other http states, assume everything else must be ok (like in the angular app ;) )
 		else {
 		    // At this point we can be safe that the password is correct
 		    passwordConsumer.accept(Optional.of(password));
