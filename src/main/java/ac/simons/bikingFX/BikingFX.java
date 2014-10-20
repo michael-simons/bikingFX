@@ -32,31 +32,34 @@ import javafx.stage.Stage;
 public class BikingFX extends Application {
 
     @Override
-    public void start(final Stage stage) throws Exception {	
-	ResourceBundle bundle;
+    public void start(final Stage stage) throws Exception {
+	ResourceBundle resources;
 	final String bundleName = "bundles.BikingFX";
-	try {	    
-	    bundle = ResourceBundle.getBundle(bundleName, Locale.getDefault());
-	} catch(MissingResourceException e) {
+	try {
+	    resources = ResourceBundle.getBundle(bundleName, Locale.getDefault());
+	} catch (MissingResourceException e) {
 	    Locale.setDefault(Locale.ENGLISH);
-	    bundle = ResourceBundle.getBundle(bundleName, Locale.getDefault());
+	    resources = ResourceBundle.getBundle(bundleName, Locale.getDefault());
 	}
-	
-        stage.setTitle("BikingFX");
-        stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/root.fxml"), bundle)));
-        stage.show();
+
+	// Get hold of the loader (don't use the factory methods)
+	final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/root.fxml"), resources);
+
+	// Load scene
+	stage.setTitle("BikingFX");
+	stage.setScene(new Scene(loader.load()));
+
+	// Retrieve controller
+	final MainController mainController = loader.getController();
+	mainController.setPrimaryStage(stage);
+
+	stage.show();
     }
 
     /**
-     * The main() method is ignored in correctly deployed JavaFX application.
-     * main() serves only as fallback in case the application can not be
-     * launched through deployment artifacts, e.g., in IDEs with limited FX
-     * support. NetBeans ignores main().
-     *
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+	launch(args);
     }
-
 }

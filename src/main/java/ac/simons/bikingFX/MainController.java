@@ -16,6 +16,7 @@
 package ac.simons.bikingFX;
 
 import ac.simons.bikingFX.api.JsonRetrievalTask;
+import ac.simons.bikingFX.bikes.MilageChangeListener;
 import ac.simons.bikingFX.bikes.Bike;
 import ac.simons.bikingFX.bikingPictures.BikingPicture;
 import ac.simons.bikingFX.bikingPictures.FlipImageService;
@@ -23,37 +24,60 @@ import ac.simons.bikingFX.gallery.GalleryPicture;
 import ac.simons.bikingFX.gallery.GalleryPictureTableCell;
 import ac.simons.bikingFX.common.ColorTableCell;
 import ac.simons.bikingFX.common.LocalDateTableCell;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * @author Michael J. Simons, 2014-10-07
  */
 public class MainController implements Initializable {
+    
+    private static final Logger logger = Logger.getLogger(MainController.class.getName());
+    
+    public enum NotificationType {
+	info, hint, warning, error
+    }
     
     public static class LoadedImageFilter implements Predicate<Node> {
 	@Override
@@ -61,7 +85,17 @@ public class MainController implements Initializable {
 	    return node instanceof StackPane && ((StackPane)node).getChildren().get(0).getUserData() != null;
 	}	
     }        
+    
+    @FunctionalInterface
+    public interface PasswordSupplier {
+	public String getPassword(boolean refresh);
+    }
 
+    /** Used for popups and modal stages */
+    private Stage primaryStage;
+    /** Currently used application bundle */
+    private ResourceBundle resources;
+    
     @FXML
     private HBox test;
 
@@ -91,10 +125,19 @@ public class MainController implements Initializable {
     
     private final Random random = new Random(System.currentTimeMillis());
     
+    /** 
+     * Used to store the password for biking.michael-simons.eu. The password is actually
+     * stored in plain text. I propably wouldn't recommend that in a more serious 
+     * application.
+     */
+    private final Preferences preferences = Preferences.userNodeForPackage(this.getClass());
+    
     private FlipImageService flipImageService;
    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+	this.resources = resources;
+	
 	bikingPictures = JsonRetrievalTask.get(BikingPicture::new, "/bikingPictures.json");
 	// Start loading image views when pictures are available
 	bikingPictures.addListener((Change<? extends BikingPicture> change) -> {
@@ -111,7 +154,36 @@ public class MainController implements Initializable {
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.test, this.random);
 	
-	viewBikes.setItems(JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true"));
+	final MilageChangeListener addMilageController = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
+	// Display a simple popup when adding milage fails
+	addMilageController.setOnFailed(state -> {
+	    final Popup popup = new Popup();
+	    popup.setAutoFix(true);
+	    popup.setAutoHide(true);
+	    popup.setHideOnEscape(true);
+	    final Label label = new Label(state.getSource().getException().getMessage());
+	    label.setOnMouseClicked(e -> popup.hide());
+	    label.getStylesheets().add("/css/default.css");
+	    label.getStyleClass().add("error-notification");
+	    popup.getContent().add(label);
+	    popup.setOnShown(e -> {
+		popup.setX(primaryStage.getX() + primaryStage.getWidth()/2 - popup.getWidth()/2);
+		popup.setY(primaryStage.getY() + primaryStage.getHeight()/2 - popup.getHeight()/2);
+	    });        
+	    popup.show(primaryStage);
+	});
+	// Get all bikes
+	final ObservableList<Bike> bikes = JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true");
+	// Configure milage controller for each bike
+	bikes.addListener((Change<? extends Bike> change)  -> {
+	    while(change.next()) {
+		if(change.wasAdded()) {
+		    change.getAddedSubList().forEach(bike -> bike.milageProperty().addListener(addMilageController));
+		}
+	    }
+	});
+		
+	viewBikes.setItems(bikes);
 	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
 	viewBikeColor.setCellValueFactory(new PropertyValueFactory<>("color"));
 	viewBikeColor.setCellFactory(ColorTableCell::new);
@@ -119,7 +191,8 @@ public class MainController implements Initializable {
 	viewBikeBoughtOn.setCellFactory(LocalDateTableCell::new);
 	viewBikeDecommissionedOn.setCellValueFactory(new PropertyValueFactory<>("decommissionedOn"));	
 	viewBikeDecommissionedOn.setCellFactory(LocalDateTableCell::new);
-	viewBikeMilage.setCellValueFactory(new PropertyValueFactory<>("milage"));	
+	viewBikeMilage.setCellValueFactory(new PropertyValueFactory<>("milage"));		
+	viewBikeMilage.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
 	
 	viewGalleryPictures.setItems(JsonRetrievalTask.get(GalleryPicture::new, "/galleryPictures.json"));
 	viewGalleryPictureTakenOn.setCellValueFactory(new PropertyValueFactory<>("takenOn"));
@@ -153,6 +226,43 @@ public class MainController implements Initializable {
 	);
     }
 
+    public void setPrimaryStage(Stage primaryStage) {
+	this.primaryStage = primaryStage;
+    }
+ 
+    public String retrievePassword() {	
+	String password = this.preferences.get("password", "");	
+	if(password.isEmpty()) {
+	    try {		
+		final Stage dialogStage = new Stage();
+		dialogStage.initModality(Modality.WINDOW_MODAL);
+		dialogStage.initOwner(this.primaryStage);
+		dialogStage.setResizable(false);
+		dialogStage.setTitle(resources.getString("enterPasswordDialog.title"));		
+		final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/enterPasswordDialog.fxml"), resources);		
+		dialogStage.setScene(new Scene(loader.load()));				
+		dialogStage.showAndWait();
+		password = ((EnterPasswordDialogController)loader.getController()).getPassword();		
+	    } catch (IOException ex) {	
+		logger.log(Level.WARNING, "Had some problems retrieving a password", ex);
+	    }	    
+	}
+	return password;
+    }
+ 
+    public void storePassword(final Optional<String> password) {	
+	try {
+	    if(!password.isPresent() || password.get().isEmpty()) {
+		this.preferences.remove("password");
+	    } else {
+		this.preferences.put("password", password.get());
+	    }
+	    this.preferences.flush();
+	} catch (BackingStoreException ex) {
+	    logger.log(Level.WARNING, "Had some problems storing a password", ex);
+	}	
+    }
+    
     final void loadPictures() {
 	final ObservableList<Node> children = test.getChildren();
 	final int numberOfNeededElements = (int) Math.ceil(test.getWidth() / 150.0) - children.size();
