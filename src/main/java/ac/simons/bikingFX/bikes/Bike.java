@@ -56,7 +56,7 @@ public class Bike {
 	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
 	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
 	this.color = new SimpleObjectProperty<>(this, "color", Color.web(jsonObject.getString("color")));
-	this.boughtOn = new SimpleObjectProperty<>(this, "boughtOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("boughtOn").longValue()), systemDefault()).toLocalDate());
+	this.boughtOn = new ReadOnlyObjectWrapper<>(this, "boughtOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("boughtOn").longValue()), systemDefault()).toLocalDate());
 	final JsonValue decommissionedOn = jsonObject.get("decommissionedOn");
 	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDateTime.ofInstant(ofEpochMilli(((JsonNumber) decommissionedOn).longValue()), systemDefault()).toLocalDate());
 	final JsonValue milage = jsonObject.get("lastMilage");
@@ -94,11 +94,7 @@ public class Bike {
     public final LocalDate getBoughtOn() {
 	return boughtOn.getValue();
     }
-
-    public final void setBoughtOn(LocalDate boughtOn) {
-	this.boughtOn.setValue(boughtOn);
-    }
-
+    
     public Property<LocalDate> boughtOnProperty() {
 	return boughtOn;
     }

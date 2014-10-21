@@ -19,7 +19,7 @@
                   <TableView fx:id="viewBikes" editable="true" prefHeight="200.0" prefWidth="200.0">
                     <columns>
                       <TableColumn fx:id="viewBikeName" editable="false" prefWidth="75.0" text="%bike.name" />
-                      <TableColumn fx:id="viewBikeBoughtOn" prefWidth="101.0" styleClass="col-right" text="%bike.boughtOn" />
+                      <TableColumn fx:id="viewBikeBoughtOn" editable="false" prefWidth="101.0" styleClass="col-right" text="%bike.boughtOn" />
                         <TableColumn fx:id="viewBikeDecommissionedOn" prefWidth="49.0" styleClass="col-right" text="%bike.decommissionedOn" />
                         <TableColumn fx:id="viewBikeMilage" prefWidth="300.0" styleClass="col-right" text="%bike.milage" />
                         <TableColumn fx:id="viewBikeColor" prefWidth="60.0" sortable="false" styleClass="col-center" text="%bike.color" />
