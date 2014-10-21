@@ -23,23 +23,27 @@ import javafx.scene.paint.Color;
 
 /**
  * @author Michael J. Simons, 2014-10-17
+ * @param <T>
  */
 public class ColorTableCell<T> extends TableCell<T, Color> {    
     private final ColorPicker colorPicker;
     
     public ColorTableCell(TableColumn<T, Color> column) {
 	this.colorPicker = new ColorPicker();
+	this.colorPicker.editableProperty().bind(column.editableProperty());
+	this.colorPicker.disableProperty().bind(column.editableProperty().not());
     }
     
     @Override
     protected void updateItem(Color item, boolean empty) {
-	super.updateItem(item, empty);
-	if (item == null || empty) {
-	    setText(null);
+	super.updateItem(item, empty);	
+	
+	setText(null);
+	if(empty) {	    
 	    setGraphic(null);
-	} else {
+	} else {	    
 	    this.colorPicker.setValue(item);
-	    setGraphic(this.colorPicker);
-	}
+	    this.setGraphic(this.colorPicker);
+	} 
     }
 }
