@@ -17,8 +17,11 @@ package ac.simons.bikingFX.common;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.util.StringConverter;
 
 import static java.time.format.FormatStyle.MEDIUM;
 
@@ -26,21 +29,55 @@ import static java.time.format.FormatStyle.MEDIUM;
  * Renderes a localized LocalDate
  * 
  * @author Michael J. Simons, 2014-10-17
+ * @param <T>
  */
 public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
-    private static final DateTimeFormatter localDateFormatter = DateTimeFormatter.ofLocalizedDate(MEDIUM);
-        
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(MEDIUM);
+    private final DatePicker datePicker;
+    
     public LocalDateTableCell(TableColumn<T, LocalDate> column) {	
+	this.datePicker = new DatePicker();
+	this.datePicker.setConverter(new StringConverter<LocalDate>() {
+	    @Override
+	    public String toString(LocalDate object) {
+		String rv = null;
+		if(object != null) {
+		    rv = formatter.format(object);
+		}		  
+		return rv;
+	    }
+
+	    @Override
+	    public LocalDate fromString(String string) {
+		LocalDate rv = null;
+		if(!Optional.ofNullable(string).orElse("").isEmpty()) {
+		    rv = LocalDate.parse(string, formatter);
+		}
+		return rv;
+	    }
+	});
+	editableProperty().bind(column.editableProperty());
     }
     
     @Override
     protected void updateItem(LocalDate item, boolean empty) {
 	super.updateItem(item, empty);
-	if (item == null || empty) {
+	
+	// Use datepicker for editable cells
+	if(empty) {
 	    setText(null);
 	    setGraphic(null);
+	} else if(isEditable()) {
+	    setText(null);
+	    this.datePicker.setValue(item);
+	    this.setGraphic(this.datePicker);
 	} else {
-	    setText(localDateFormatter.format(item));
-	}
+	    setGraphic(null);
+	    if(item == null) {
+		setText(null);
+	    } else {
+		setText(formatter.format(item));
+	    }
+	}	
     }
 }
