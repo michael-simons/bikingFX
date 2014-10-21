@@ -15,12 +15,9 @@
  */
 package ac.simons.bikingFX.common;
 
-import javafx.geometry.Insets;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
 
 import javafx.scene.paint.Color;
 
@@ -28,7 +25,10 @@ import javafx.scene.paint.Color;
  * @author Michael J. Simons, 2014-10-17
  */
 public class ColorTableCell<T> extends TableCell<T, Color> {    
+    private final ColorPicker colorPicker;
+    
     public ColorTableCell(TableColumn<T, Color> column) {
+	this.colorPicker = new ColorPicker();
     }
     
     @Override
@@ -38,13 +38,8 @@ public class ColorTableCell<T> extends TableCell<T, Color> {
 	    setText(null);
 	    setGraphic(null);
 	} else {
-	    int r = (int)Math.round(item.getRed() * 255.0);
-	    int g = (int)Math.round(item.getGreen() * 255.0);
-	    int b = (int)Math.round(item.getBlue() * 255.0);
-	    
-	    setText(String.format("#%02x%02x%02x", r, g, b));
-	    setBackground(new Background(new BackgroundFill(item, CornerRadii.EMPTY, Insets.EMPTY)));
-	    setTextFill(item.invert());
+	    this.colorPicker.setValue(item);
+	    setGraphic(this.colorPicker);
 	}
     }
 }
