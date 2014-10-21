@@ -257,15 +257,14 @@ public class RootController implements Initializable {
     }
     
     final void loadPictures() {
-	final ObservableList<Node> children = bikingPicturesContainer.getChildren();
+	final ObservableList<Node> children = bikingPicturesContainer.getChildren();	
 	final int numberOfNeededElements = (int) Math.ceil(bikingPicturesContainer.getWidth() / 150.0) - children.size();
 	if(bikingPictures.isEmpty() || numberOfNeededElements <= 0) {	    
 	    return;
 	}
 		
 	// Get currently loaded images
-	final Set<BikingPicture> loadedBikingPictures = bikingPicturesContainer
-		.getChildren().stream()
+	final Set<BikingPicture> loadedBikingPictures = children.stream()
 		.filter(new LoadedImageFilter())
 		.map(node -> (BikingPicture)((StackPane)node).getChildren().get(0).getUserData())
 		.collect(Collectors.toSet());	
