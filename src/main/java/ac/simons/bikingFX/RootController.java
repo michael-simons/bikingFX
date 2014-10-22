@@ -147,9 +147,9 @@ public class RootController implements Initializable {
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.bikingPicturesContainer, this.random);
 	
-	final MilageChangeListener addMilageController = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
+	final MilageChangeListener milageChangeListener = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
 	// Display a simple popup when adding milage fails
-	addMilageController.setOnFailed(state -> {
+	milageChangeListener.setOnFailed(state -> {
 	    final Popup popup = new Popup();
 	    popup.setAutoFix(true);
 	    popup.setAutoHide(true);
@@ -171,7 +171,7 @@ public class RootController implements Initializable {
 	bikes.addListener((Change<? extends Bike> change)  -> {
 	    while(change.next()) {
 		if(change.wasAdded()) {
-		    change.getAddedSubList().forEach(bike -> bike.milageProperty().addListener(addMilageController));
+		    change.getAddedSubList().forEach(bike -> bike.milageProperty().addListener(milageChangeListener));
 		}
 	    }
 	});
