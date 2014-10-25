@@ -16,6 +16,7 @@
 package ac.simons.bikingFX.common;
 
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 
@@ -31,14 +32,21 @@ public class ColorTableCell<T> extends TableCell<T, Color> {
     public ColorTableCell(TableColumn<T, Color> column) {
 	this.colorPicker = new ColorPicker();
 	this.colorPicker.editableProperty().bind(column.editableProperty());
-	this.colorPicker.disableProperty().bind(column.editableProperty().not());
+	this.colorPicker.setDisable(true);	
+	this.colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+	    if(isEditing()) {
+		commitEdit(newValue);
+	    }
+	});	
+	this.colorPicker.disableProperty().bind(editingProperty().not());
+	setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
     }
-    
+         
     @Override
     protected void updateItem(Color item, boolean empty) {
 	super.updateItem(item, empty);	
 	
-	setText(null);
+	setText(null);	
 	if(empty) {	    
 	    setGraphic(null);
 	} else {	    
