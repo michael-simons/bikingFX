@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
+import javafx.beans.property.Property;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -46,6 +48,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
@@ -64,6 +67,10 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+
+import static java.lang.Math.round;
+import static java.lang.String.format;
+import static javafx.beans.binding.Bindings.createStringBinding;
 
 /**
  * @author Michael J. Simons, 2014-10-07
@@ -104,6 +111,9 @@ public class RootController implements Initializable {
     private TableColumn<Bike, LocalDate> viewBikeDecommissionedOn;
     @FXML
     private TableColumn<Bike, Integer> viewBikeMilage;
+    @FXML
+    private PieChart chartMilagePerBike;
+        
     
     @FXML
     private TableView<GalleryPicture> viewGalleryPictures;
@@ -165,13 +175,41 @@ public class RootController implements Initializable {
 	    });        
 	    popup.show(primaryStage);
 	});
+	
+	// Prepare content for bike graph
+	final ObservableList<PieChart.Data> chartMilagePerBikeData = FXCollections.observableArrayList();
+	chartMilagePerBike.setData(chartMilagePerBikeData);
+	chartMilagePerBike.setLegendVisible(false);
 	// Get all bikes
 	final ObservableList<Bike> bikes = JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true");
 	// Configure milage controller for each bike
 	bikes.addListener((Change<? extends Bike> change)  -> {
 	    while(change.next()) {
 		if(change.wasAdded()) {
-		    change.getAddedSubList().forEach(bike -> bike.milageProperty().addListener(milageChangeListener));
+		    change.getAddedSubList().stream()			    
+			    .forEach(bike -> {				
+				final Property<Integer> milageProperty = bike.milageProperty(); 
+				// Listen for changes to the property with the controller that updates the api
+				milageProperty.addListener(milageChangeListener);
+				
+				final PieChart.Data data = new PieChart.Data(((Bike)milageProperty.getBean()).getName(), 0);
+				data.pieValueProperty().bind(milageProperty);				
+				// When the data is attached the node becomes availabe
+				data.nodeProperty().addListener((observable, oldValue, newValue) -> {
+				    if(newValue != null) {				
+					// and is styleable					
+					newValue.styleProperty().bind(
+					    // create a binding to a String format containing the rgb representation of the color of the bike
+					    createStringBinding(() -> {
+						    final Color c = bike.getColor();
+						    return format("-fx-pie-color: rgb(%d, %d, %d);", round(c.getRed() * 255.0),round(c.getGreen()* 255.0),round(c.getBlue()* 255.0));
+					    }, 
+					    bike.colorProperty())
+					);
+				    }
+				});				
+				chartMilagePerBikeData.add(data);				
+			    });
 		}
 	    }
 	});
