@@ -23,6 +23,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.util.StringConverter;
 
 import static java.time.format.FormatStyle.MEDIUM;
@@ -58,6 +59,19 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
 		return rv;
 	    }
 	});
+	// Manage editing
+	this.datePicker.setOnShowing(event -> {
+	    final TableView<T> tableView = getTableView();
+	    tableView.getSelectionModel().select(getTableRow().getIndex());
+	    tableView.edit(tableView.getSelectionModel().getSelectedIndex(), column);	    
+	});
+	this.datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+	    if(isEditing()) {
+		commitEdit(newValue);
+	    }
+	});	
+	
+	//this.datePicker.disableProperty().bind(editingProperty().not());
 	
 	// Bind this cells editable property to the whole column
 	editableProperty().bind(column.editableProperty());
@@ -66,7 +80,7 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
 		.when(editableProperty())
                     .then(ContentDisplay.GRAPHIC_ONLY)
                     .otherwise(ContentDisplay.TEXT_ONLY)
-	);
+	);	
     }
     
     @Override
