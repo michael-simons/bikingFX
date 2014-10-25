@@ -18,6 +18,8 @@ package ac.simons.bikingFX.common;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import javafx.beans.binding.Bindings;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -56,23 +58,28 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
 		return rv;
 	    }
 	});
+	
+	// Bind this cells editable property to the whole column
 	editableProperty().bind(column.editableProperty());
+	// and then use this to configure the date picker
+	contentDisplayProperty().bind(Bindings
+		.when(editableProperty())
+                    .then(ContentDisplay.GRAPHIC_ONLY)
+                    .otherwise(ContentDisplay.TEXT_ONLY)
+	);
     }
     
     @Override
     protected void updateItem(LocalDate item, boolean empty) {
 	super.updateItem(item, empty);
-	
-	// Use datepicker for editable cells
+		
 	if(empty) {
 	    setText(null);
 	    setGraphic(null);
-	} else if(isEditable()) {
-	    setText(null);
-	    this.datePicker.setValue(item);
-	    this.setGraphic(this.datePicker);
 	} else {
-	    setGraphic(null);
+	    // Datepicker can handle null values
+	    this.datePicker.setValue(item);	    
+	    setGraphic(this.datePicker);
 	    if(item == null) {
 		setText(null);
 	    } else {
