@@ -20,3 +20,7 @@
     -fx-font-weight: bold;
     -fx-text-fill: white;    
 }
+
+.table-cell .color-picker {
+    -fx-pref-width: 115px;
+}
