@@ -39,6 +39,7 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.property.Property;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
@@ -136,6 +137,12 @@ public class RootController implements Initializable {
     private final Preferences preferences = Preferences.userNodeForPackage(this.getClass());
     
     private FlipImageService flipImageService;
+    
+    /** 
+     * Listens for changes on the {@link Bike#milageProperty() } and transfers 
+     * them to the server side api
+     */
+    private MilageChangeListener milageChangeListener;
    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -157,9 +164,10 @@ public class RootController implements Initializable {
 	// Prepare flipservice, depends on container so don't initialise in constructor
 	this.flipImageService = new FlipImageService(this.bikingPictures, this.bikingPicturesContainer, this.random);
 	
-	final MilageChangeListener milageChangeListener = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
+	// Prepare listener for milage property
+	this.milageChangeListener = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
 	// Display a simple popup when adding milage fails
-	milageChangeListener.setOnFailed(state -> {
+	this.milageChangeListener.setOnFailed(state -> {
 	    final Popup popup = new Popup();
 	    popup.setAutoFix(true);
 	    popup.setAutoHide(true);
@@ -176,43 +184,13 @@ public class RootController implements Initializable {
 	    popup.show(primaryStage);
 	});
 	
-	// Prepare content for bike graph
-	final ObservableList<PieChart.Data> chartMilagePerBikeData = FXCollections.observableArrayList();
-	chartMilagePerBike.setData(chartMilagePerBikeData);
+	// Prepare bike graph
+	chartMilagePerBike.setData(FXCollections.observableArrayList());
 	chartMilagePerBike.setLegendVisible(false);
 	// Get all bikes
 	final ObservableList<Bike> bikes = JsonRetrievalTask.get(Bike::new, "/bikes.json?all=true");
 	// Configure milage controller for each bike
-	bikes.addListener((Change<? extends Bike> change)  -> {
-	    while(change.next()) {
-		if(change.wasAdded()) {
-		    change.getAddedSubList().stream()			    
-			    .forEach(bike -> {				
-				final Property<Integer> milageProperty = bike.milageProperty(); 
-				// Listen for changes to the property with the controller that updates the api
-				milageProperty.addListener(milageChangeListener);
-				
-				final PieChart.Data data = new PieChart.Data(((Bike)milageProperty.getBean()).getName(), 0);
-				data.pieValueProperty().bind(milageProperty);				
-				// When the data is attached the node becomes availabe
-				data.nodeProperty().addListener((observable, oldValue, newValue) -> {
-				    if(newValue != null) {				
-					// and is styleable					
-					newValue.styleProperty().bind(
-					    // create a binding to a String format containing the rgb representation of the color of the bike
-					    createStringBinding(() -> {
-						    final Color c = bike.getColor();
-						    return format("-fx-pie-color: rgb(%d, %d, %d);", round(c.getRed() * 255.0),round(c.getGreen()* 255.0),round(c.getBlue()* 255.0));
-					    }, 
-					    bike.colorProperty())
-					);
-				    }
-				});				
-				chartMilagePerBikeData.add(data);				
-			    });
-		}
-	    }
-	});
+	bikes.addListener(this::watchChangesToBikeList);
 		
 	viewBikes.setItems(bikes);
 	viewBikeName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -292,6 +270,63 @@ public class RootController implements Initializable {
 	} catch (BackingStoreException ex) {
 	    logger.log(Level.WARNING, "Had some problems storing a password", ex);
 	}	
+    }
+    
+    /**
+     * Observes changes to the list of all bikes. If bikes are added, add the milage
+     * listener to the property and also add a data element to the graph
+     * @param change 
+     */
+    final void watchChangesToBikeList(final Change<? extends Bike> change) {
+	while (change.next()) {
+	    if (!change.wasAdded()) {
+		continue;
+	    }
+	    final List<? extends Bike> addedSublist = change.getAddedSubList();
+	    
+	    // Add milage listener
+	    addedSublist.stream()
+		    .map(bike -> bike.milageProperty())
+		    .forEach(milage -> milage.addListener(milageChangeListener));
+	    
+	    // Add data elements to chart
+	    this.chartMilagePerBike.getData().addAll(
+		    addedSublist.stream()
+			.map(this::createDataElementForBike)
+			.collect(Collectors.toList())
+	    );
+	}
+    }
+
+    /**
+     * Creates a PieChart.Data element for the given bike. The data elements 
+     * value is bound to the milageProperty of the bike. The node of the element
+     * then is watched and if it becomes available, it's style propert is bound
+     * to the color of the bike
+     * 
+     * @param bike Bike whos milage is displayed in the pie chart
+     * @return a new pie chart data element
+     */
+    final PieChart.Data createDataElementForBike(final Bike bike) {
+	final Property<Integer> milageProperty = bike.milageProperty();
+	final PieChart.Data data = new PieChart.Data(bike.getName(), 0);
+	data.pieValueProperty().bind(milageProperty);
+	// When the data is attached, the node becomes availabe
+	data.nodeProperty().addListener((observable, oldValue, newValue) -> {
+	    if (newValue == null) {
+		return;
+	    }
+	    // and is styleable					
+	    newValue.styleProperty().bind(
+		    // create a binding to a String format containing the rgb representation of the color of the bike
+		    createStringBinding(() -> {
+			final Color c = bike.getColor();
+			return format("-fx-pie-color: rgb(%d, %d, %d);", round(c.getRed() * 255.0), round(c.getGreen() * 255.0), round(c.getBlue() * 255.0));
+		    },
+		    bike.colorProperty())
+	    );
+	});
+	return data;
     }
     
     final void loadPictures() {
