@@ -47,6 +47,24 @@
 			</TableView>
 		    </content>
 		</Tab>
+            <Tab text="%tab.tracks">
+              <content>
+                  <SplitPane dividerPositions="0.5" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                        <TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" prefHeight="200.0" prefWidth="200.0">
+                          <columns>
+                              <TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0" resizable="false" styleClass="col-right" text="%track.coveredOn" />
+                            <TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name" />
+                          </columns>
+                           <columnResizePolicy>
+                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                           </columnResizePolicy>
+                        </TableView>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                    </items>
+                  </SplitPane>
+              </content>
+            </Tab>
 	    </tabs>
 	</TabPane>
     </children>

@@ -24,6 +24,8 @@ import ac.simons.bikingFX.gallery.GalleryPicture;
 import ac.simons.bikingFX.gallery.GalleryPictureTableCell;
 import ac.simons.bikingFX.common.ColorTableCell;
 import ac.simons.bikingFX.common.LocalDateTableCell;
+import ac.simons.bikingFX.tracks.Track;
+import ac.simons.bikingFX.tracks.Track.Type;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -39,10 +41,10 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.property.Property;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -125,6 +127,13 @@ public class RootController implements Initializable {
     @FXML
     private TableColumn<GalleryPicture, Integer> viewGalleryPictureImage;
           
+    @FXML
+    private TableView<Track> viewTracks;
+    @FXML
+    private TableColumn<Track, LocalDate> viewTrackCoveredOn;
+    @FXML
+    private TableColumn<Track, String> viewTrackName;
+    
     private ObservableList<BikingPicture> bikingPictures;  
     
     private final Random random = new Random(System.currentTimeMillis());
@@ -233,6 +242,18 @@ public class RootController implements Initializable {
 		.subtract(viewGalleryPictureTakenOn.widthProperty())
 		.subtract(viewGalleryPictureDescription.widthProperty())
 	);
+	
+	// This is necessary because the filtered list is immutable and therefor
+	// not sortable, so we wrap it.
+	final SortedList<Track> tracks = new SortedList<>(JsonRetrievalTask.get(Track::new, "/tracks.json").filtered(track -> track.getType() == Type.biking));
+	viewTracks.setItems(tracks);	
+	tracks.comparatorProperty().bind(viewTracks.comparatorProperty());	
+	viewTrackCoveredOn.setCellFactory(LocalDateTableCell::new);
+	viewTrackCoveredOn.setCellValueFactory(new PropertyValueFactory<>("coveredOn"));	
+	viewTrackName.setCellValueFactory(new PropertyValueFactory<>("name"));
+	viewTrackName.prefWidthProperty().bind(viewTracks.widthProperty().subtract(viewTrackCoveredOn.widthProperty()));
+	// Establish default sort order
+	viewTracks.getSortOrder().add(viewTrackCoveredOn);
     }
 
     public void setPrimaryStage(Stage primaryStage) {
