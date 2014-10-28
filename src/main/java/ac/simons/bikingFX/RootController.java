@@ -276,7 +276,8 @@ public class RootController implements Initializable {
 	});
 	viewTracks.getSelectionModel().selectedItemProperty().addListener((observable, oldTrack, newTrack) -> {
 	    if(newTrack != null) {
-		final String mapUrl = String.format("http://biking.michael-simons.eu/tracks/%s/embed?width=%d&height=%d", 
+		final String mapUrl = String.format("%s/tracks/%s/embed?width=%d&height=%d", 
+			JsonRetrievalTask.HOST_AND_PORT,
 			newTrack.getId(), 
 			viewTrackMap.widthProperty().intValue(), 
 			viewTrackMap.heightProperty().intValue()

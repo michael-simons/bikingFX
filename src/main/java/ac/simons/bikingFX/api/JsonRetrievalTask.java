@@ -38,7 +38,8 @@ import javax.json.JsonValue;
  */
 public class JsonRetrievalTask<T> extends Task<Collection<T>> {
 
-    public static final String BASE_URL = "http://biking.michael-simons.eu/api";
+    public static final String HOST_AND_PORT = "http://biking.michael-simons.eu"; 
+    public static final String BASE_URL = HOST_AND_PORT + "/api";
     private static final Logger logger = Logger.getLogger(JsonRetrievalTask.class.getName());
 
     @FunctionalInterface
