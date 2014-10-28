@@ -41,10 +41,12 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.beans.property.Property;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
+import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -66,6 +68,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
@@ -133,6 +137,9 @@ public class RootController implements Initializable {
     private TableColumn<Track, LocalDate> viewTrackCoveredOn;
     @FXML
     private TableColumn<Track, String> viewTrackName;
+    @FXML
+    private WebView viewTrackMap;
+    
     
     private ObservableList<BikingPicture> bikingPictures;  
     
@@ -251,9 +258,33 @@ public class RootController implements Initializable {
 	viewTrackCoveredOn.setCellFactory(LocalDateTableCell::new);
 	viewTrackCoveredOn.setCellValueFactory(new PropertyValueFactory<>("coveredOn"));	
 	viewTrackName.setCellValueFactory(new PropertyValueFactory<>("name"));
-	viewTrackName.prefWidthProperty().bind(viewTracks.widthProperty().subtract(viewTrackCoveredOn.widthProperty()));
+	viewTrackName.prefWidthProperty().bind(viewTracks.widthProperty().subtract(viewTrackCoveredOn.widthProperty()));	
 	// Establish default sort order
 	viewTracks.getSortOrder().add(viewTrackCoveredOn);
+	// HTML view of selected track
+	viewTrackMap.setContextMenuEnabled(false);
+	final WebEngine webEngine = viewTrackMap.getEngine();
+	webEngine.setJavaScriptEnabled(true);	
+	// Watch loading of map data
+	webEngine.getLoadWorker().stateProperty().addListener((observable, oldState, newState) -> {
+	    if (newState == State.SUCCEEDED) {
+		logger.log(Level.FINE, "Loading done, now preparing map.");
+		// enable javascript and set every relevant width and height to 100% 
+		// so that the webview is automatically filled		
+		webEngine.executeScript("$('html').height('100%'); $('body').height('100%'); $('#map').css('width', '100%').css('height', '100%'); ");
+	    }
+	});
+	viewTracks.getSelectionModel().selectedItemProperty().addListener((observable, oldTrack, newTrack) -> {
+	    if(newTrack != null) {
+		final String mapUrl = String.format("http://biking.michael-simons.eu/tracks/%s/embed?width=%d&height=%d", 
+			newTrack.getId(), 
+			viewTrackMap.widthProperty().intValue(), 
+			viewTrackMap.heightProperty().intValue()
+		); 
+		logger.log(Level.FINE, "Loading embedded map {0}", new Object[]{mapUrl});
+		webEngine.load(mapUrl);
+	    }
+	});
     }
 
     public void setPrimaryStage(Stage primaryStage) {

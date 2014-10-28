@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
 <?import javafx.scene.chart.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
@@ -49,7 +50,7 @@
 		</Tab>
             <Tab text="%tab.tracks">
               <content>
-                  <SplitPane dividerPositions="0.5" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                  <SplitPane dividerPositions="0.33" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
                         <TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" prefHeight="200.0" prefWidth="200.0">
                           <columns>
@@ -60,7 +61,7 @@
                               <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                            </columnResizePolicy>
                         </TableView>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                        <WebView fx:id="viewTrackMap" prefHeight="236.0" prefWidth="900.0" />
                     </items>
                   </SplitPane>
               </content>
