@@ -57,9 +57,6 @@
                               <TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0" resizable="false" styleClass="col-right" text="%track.coveredOn" />
                             <TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name" />
                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
                         </TableView>
                         <WebView fx:id="viewTrackMap" prefHeight="236.0" prefWidth="900.0" />
                     </items>
