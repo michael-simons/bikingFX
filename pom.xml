@@ -155,12 +155,17 @@
 				<configuration>        
 				    <executable>${java.home}/../bin/javapackager</executable>      
 				    <arguments>					
-					<argument>-deploy</argument>
+					<argument>-deploy</argument>					
+					<argument>-title</argument>
+					<argument>${project.name}</argument>
+					<argument>-vendor</argument>
+					<argument>${project.organization.name}</argument>
+					<argument>-BappVersion=${project.version}</argument>					
 					<argument>-native</argument>				
 					<argument>installer</argument>
 					<argument>-Bruntime=${java.home}</argument>
 					<argument>-appclass</argument>
-					<argument>${mainClass}</argument>
+					<argument>${mainClass}</argument>					
 					<argument>-srcfiles</argument>				
 					<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
 					<argument>-outdir</argument>
