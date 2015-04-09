@@ -26,7 +26,6 @@ import ac.simons.bikingFX.common.ColorTableCell;
 import ac.simons.bikingFX.common.LocalDateTableCell;
 import ac.simons.bikingFX.tracks.Track;
 import ac.simons.bikingFX.tracks.Track.Type;
-import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,22 +39,25 @@ import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 import javafx.beans.property.Property;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Worker.State;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -64,13 +66,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
@@ -294,20 +297,44 @@ public class RootController implements Initializable {
  
     public String retrievePassword() {	
 	String password = this.preferences.get("password", "");	
-	if(password.isEmpty()) {
-	    try {		
-		final Stage dialogStage = new Stage();
-		dialogStage.initModality(Modality.WINDOW_MODAL);
-		dialogStage.initOwner(this.primaryStage);
-		dialogStage.setResizable(false);
-		dialogStage.setTitle(resources.getString("enterPasswordDialog.title"));		
-		final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/enterPasswordDialog.fxml"), resources);		
-		dialogStage.setScene(new Scene(loader.load()));				
-		dialogStage.showAndWait();
-		password = ((EnterPasswordDialogController)loader.getController()).getPassword();		
-	    } catch (IOException ex) {	
-		logger.log(Level.WARNING, "Had some problems retrieving a password", ex);
-	    }	    
+	if(password.isEmpty()) {	    
+	    final Dialog<String> passwordDialog = new Dialog<>();
+	    passwordDialog.setTitle(resources.getString("enterPasswordDialog.title"));
+	    passwordDialog.setHeaderText(null);
+	    final DialogPane passwordDialogPane = passwordDialog.getDialogPane();
+	    
+	    final PasswordField passwordField = new PasswordField();
+	    passwordField.setPromptText(resources.getString("enterPasswordDialog.passwordFieldPrompt"));
+	    // Create and add new button type for confirmation	
+	    final ButtonType confirmButtonType = new ButtonType(resources.getString("enterPasswordDialog.title"), ButtonData.OK_DONE);
+	    passwordDialogPane.getButtonTypes().add(confirmButtonType);
+	    // Retrieve node
+	    final Node confirmButton = passwordDialogPane.lookupButton(confirmButtonType);
+	    confirmButton.disableProperty().bind(passwordField.textProperty().isEmpty());
+
+	    // Result converter
+	    passwordDialog.setResultConverter(dialogButton -> {
+		final ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
+		return data == ButtonData.OK_DONE ? passwordField.getText() : null;
+	    });
+
+	    // Create content
+	    final GridPane grid = new GridPane();
+	    grid.setHgap(10);
+	    grid.setMaxWidth(Double.MAX_VALUE);
+	    grid.setAlignment(Pos.CENTER_LEFT);
+
+	    // Do layout
+	    passwordField.setMaxWidth(Double.MAX_VALUE);
+	    GridPane.setHgrow(passwordField, Priority.ALWAYS);
+	    GridPane.setFillWidth(passwordField, true);
+
+	    grid.add(new Label(passwordField.getPromptText()), 0, 0);
+	    grid.add(passwordField, 1, 0);
+	    passwordDialogPane.setContent(grid);
+
+	    Platform.runLater(() -> passwordField.requestFocus());
+	    password = passwordDialog.showAndWait().orElse(null);
 	}
 	return password;
     }
