@@ -42,17 +42,9 @@ public class BikingFX extends Application {
 	    resources = ResourceBundle.getBundle(bundleName, Locale.getDefault());
 	}
 
-	// Get hold of the loader (don't use the factory methods)
-	final FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/root.fxml"), resources);
-
 	// Load scene
 	stage.setTitle("BikingFX");
-	stage.setScene(new Scene(loader.load()));
-
-	// Retrieve controller
-	final RootController mainController = loader.getController();
-	mainController.setPrimaryStage(stage);
-
+	stage.setScene(new Scene(FXMLLoader.load(BikingFX.class.getResource("/fxml/root.fxml"), resources)));
 	stage.show();
     }
 

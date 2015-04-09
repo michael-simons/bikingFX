@@ -51,6 +51,8 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.chart.PieChart;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
@@ -74,8 +76,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
 
 import static java.lang.Math.round;
@@ -100,9 +100,7 @@ public class RootController implements Initializable {
     public interface PasswordSupplier {
 	public String getPassword(boolean refresh);
     }
-
-    /** Used for popups and modal stages */
-    private Stage primaryStage;
+    
     /** Currently used application bundle */
     private ResourceBundle resources;
     
@@ -187,20 +185,11 @@ public class RootController implements Initializable {
 	this.milageChangeListener = new MilageChangeListener(this::retrievePassword, this::storePassword, this.resources);
 	// Display a simple popup when adding milage fails
 	this.milageChangeListener.setOnFailed(state -> {
-	    final Popup popup = new Popup();
-	    popup.setAutoFix(true);
-	    popup.setAutoHide(true);
-	    popup.setHideOnEscape(true);
-	    final Label label = new Label(state.getSource().getException().getMessage());
-	    label.setOnMouseClicked(e -> popup.hide());
-	    label.getStylesheets().add("/css/default.css");
-	    label.getStyleClass().add("error-notification");
-	    popup.getContent().add(label);
-	    popup.setOnShown(e -> {
-		popup.setX(primaryStage.getX() + primaryStage.getWidth()/2 - popup.getWidth()/2);
-		popup.setY(primaryStage.getY() + primaryStage.getHeight()/2 - popup.getHeight()/2);
-	    });        
-	    popup.show(primaryStage);
+	    final Alert alert = new Alert(AlertType.ERROR);
+	    alert.setTitle(resources.getString("common.error"));
+	    alert.setHeaderText(null);
+	    alert.setContentText(state.getSource().getException().getMessage());
+	    alert.showAndWait();	    
 	});
 	
 	// Prepare bike graph
@@ -289,11 +278,7 @@ public class RootController implements Initializable {
 		webEngine.load(mapUrl);
 	    }
 	});
-    }
-
-    public void setPrimaryStage(Stage primaryStage) {
-	this.primaryStage = primaryStage;
-    }
+    }   
  
     public String retrievePassword() {	
 	String password = this.preferences.get("password", "");	
