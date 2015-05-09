@@ -39,25 +39,83 @@
 		</Tab>
 		<Tab text="%tab.gallery">
 		    <content>
-			<TableView fx:id="viewGalleryPictures" prefHeight="200.0" prefWidth="200.0">
-			    <columns>
-				<TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0" resizable="false" text="%galleryPicture.takenOn" />
-				<TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false" text="%galleryPicture.description" />
-				<TableColumn fx:id="viewGalleryPictureImage" maxWidth="800.0" minWidth="400.0" prefWidth="400.0" text="%galleryPicture.image" />
-			    </columns>
-			</TableView>
+                  <SplitPane dividerPositions="0.25">
+                     <items>
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                           <children>
+                              <GridPane hgap="8.0" layoutX="47.0" layoutY="88.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" valignment="BASELINE" vgrow="ALWAYS" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="%newPicture.date" />
+                                    <Label text="%newPicture.description" GridPane.rowIndex="1" />
+                                    <Button mnemonicParsing="false" text="%newPicture.upload" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                    <TextArea prefHeight="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <DatePicker GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </AnchorPane>
+      			<TableView fx:id="viewGalleryPictures" prefHeight="200.0" prefWidth="200.0">
+      			    <columns>
+      				<TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0" resizable="false" text="%galleryPicture.takenOn" />
+      				<TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false" text="%galleryPicture.description" />
+      				<TableColumn fx:id="viewGalleryPictureImage" maxWidth="800.0" minWidth="400.0" prefWidth="400.0" text="%galleryPicture.image" />
+      			    </columns>
+      			</TableView>
+                     </items>
+                  </SplitPane>
 		    </content>
 		</Tab>
             <Tab text="%tab.tracks">
               <content>
-                  <SplitPane dividerPositions="0.33" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                  <SplitPane dividerPositions="0.45" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
-                        <TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                              <TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0" resizable="false" styleClass="col-right" text="%track.coveredOn" />
-                            <TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name" />
-                          </columns>
-                        </TableView>
+                        <HBox>
+                           <children>
+                              <AnchorPane maxHeight="1.7976931348623157E308" minHeight="175.0" minWidth="280.0">
+                                 <children>
+                                    <GridPane hgap="8.0" minHeight="175.0" minWidth="50.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="10.0">
+                                      <columnConstraints>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="50.0" prefWidth="100.0" />
+                                      </columnConstraints>
+                                      <rowConstraints>
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="BASELINE" vgrow="ALWAYS" />
+                                          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                      </rowConstraints>
+                                       <children>
+                                          <Label text="%newTrack.name" />
+                                          <Label text="%newTrack.date" GridPane.rowIndex="1" />
+                                          <Label text="%newTrack.type" GridPane.rowIndex="2" />
+                                          <Label text="%newTrack.description" GridPane.rowIndex="3" />
+                                          <TextField GridPane.columnIndex="1" />
+                                          <TextArea prefWidth="200.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.vgrow="ALWAYS" />
+                                          <DatePicker GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                          <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                          <Button mnemonicParsing="false" text="%newTrack.upload" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                       </children>
+                                    </GridPane>
+                                 </children>
+                              </AnchorPane>
+                              <TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" maxWidth="1.7976931348623157E308" minHeight="175.0" prefHeight="160.0" prefWidth="643.0" HBox.hgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0" resizable="false" styleClass="col-right" text="%track.coveredOn" />
+                                  <TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </HBox>
                         <WebView fx:id="viewTrackMap" prefHeight="236.0" prefWidth="900.0" />
                     </items>
                   </SplitPane>
