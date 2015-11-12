@@ -19,6 +19,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableCell;
@@ -58,12 +60,14 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
 		}
 		return rv;
 	    }
-	});
+	});	
 	// Manage editing
-	this.datePicker.setOnShowing(event -> {
-	    final TableView<T> tableView = getTableView();
-	    tableView.getSelectionModel().select(getTableRow().getIndex());
-	    tableView.edit(tableView.getSelectionModel().getSelectedIndex(), column);	    
+	this.datePicker.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {	   
+	    if(newValue) {
+		final TableView<T> tableView = getTableView();
+		tableView.getSelectionModel().select(getTableRow().getIndex());
+		tableView.edit(tableView.getSelectionModel().getSelectedIndex(), column);	    
+	    }
 	});
 	this.datePicker.valueProperty().addListener((observable, oldValue, newValue) -> {
 	    if(isEditing()) {
