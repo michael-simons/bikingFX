@@ -71,8 +71,6 @@ public class LocalDateTableCell<T> extends TableCell<T, LocalDate> {
 	    }
 	});	
 	
-	//this.datePicker.disableProperty().bind(editingProperty().not());
-	
 	// Bind this cells editable property to the whole column
 	editableProperty().bind(column.editableProperty());
 	// and then use this to configure the date picker
