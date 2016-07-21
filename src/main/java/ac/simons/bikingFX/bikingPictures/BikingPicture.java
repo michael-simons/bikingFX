@@ -31,7 +31,7 @@ public class BikingPicture implements Serializable {
     private static final long serialVersionUID = 6729385561352721235L;
     
     /** Base url for biking pictures as String format string */
-    public static final String BASE_URL_FORMAT_STRING = "http://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
+    public static final String BASE_URL_FORMAT_STRING = "https://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
 
     /**
      * URL for the image source
