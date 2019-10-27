@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 michael-simons.eu.
+ * Copyright 2014-2019 michael-simons.eu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package ac.simons.bikingFX.gallery;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -24,11 +23,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
 
-import static java.time.Instant.ofEpochMilli;
-import static java.time.ZoneId.systemDefault;
-
 /**
- * @author Michael J. Simons, 2014-10-18
+ * @author Michael J. Simons
+ *
+ * @since 2014-10-18
  */
 public class GalleryPicture {
     
@@ -45,7 +43,7 @@ public class GalleryPicture {
 	final JsonObject jsonObject = (JsonObject) jsonValue;
 
 	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
-	this.takenOn = new ReadOnlyObjectWrapper<>(this, "takenOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("takenOn").longValue()), systemDefault()).toLocalDate());
+	this.takenOn = new ReadOnlyObjectWrapper<>(this, "takenOn", LocalDate.parse(jsonObject.getString("takenOn")));
 	this.filename = new ReadOnlyObjectWrapper<>(this, "filename", jsonObject.getString("filename"));
 	this.description = new SimpleStringProperty(this, "description", jsonObject.getString("description"));
     }

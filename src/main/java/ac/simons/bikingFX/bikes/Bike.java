@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 michael-simons.eu.
+ * Copyright 2014-2019 michael-simons.eu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package ac.simons.bikingFX.bikes;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -24,16 +23,17 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
 import javax.json.JsonNumber;
 import javax.json.JsonObject;
+import javax.json.JsonString;
 import javax.json.JsonValue;
 
-import static java.time.Instant.ofEpochMilli;
-import static java.time.ZoneId.systemDefault;
 import static javax.json.JsonValue.ValueType.NULL;
 
 /**
  * Represents an updateable Bike in my collection of bikes.
  *
- * @author Michael J. Simons, 2014-10-16
+ * @author Michael J. Simons
+ *
+ * @since 2014-10-16
  */
 public class Bike {
 
@@ -56,9 +56,9 @@ public class Bike {
 	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
 	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
 	this.color = new SimpleObjectProperty<>(this, "color", Color.web(jsonObject.getString("color")));
-	this.boughtOn = new ReadOnlyObjectWrapper<>(this, "boughtOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("boughtOn").longValue()), systemDefault()).toLocalDate());
+	this.boughtOn = new ReadOnlyObjectWrapper<>(this, "boughtOn", LocalDate.parse(jsonObject.getString("boughtOn")));
 	final JsonValue decommissionedOn = jsonObject.get("decommissionedOn");
-	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDateTime.ofInstant(ofEpochMilli(((JsonNumber) decommissionedOn).longValue()), systemDefault()).toLocalDate());
+	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDate.parse(((JsonString)decommissionedOn).getString()));
 	final JsonValue milage = jsonObject.get("lastMilage");
 	this.milage = new SimpleObjectProperty<>(this, "milage", milage.getValueType() == NULL ? 0 : ((JsonNumber) milage).intValue());
     }

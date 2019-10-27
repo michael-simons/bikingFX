@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 michael-simons.eu.
+ * Copyright 2014-2019 michael-simons.eu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,13 @@ import static java.time.Instant.ofEpochMilli;
 import static java.time.ZoneId.systemDefault;
 
 /**
- * @author Michael J. Simons, 2014-10-27
+ * @author Michael J. Simons
+ *
+ * @since 2014-10-27
  */
 public class Track {
 
-    public static enum Type {
+    public enum Type {
 
 	biking, running
     }
@@ -51,7 +53,7 @@ public class Track {
 	final JsonObject jsonObject = (JsonObject) jsonValue;
 
 	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getString("id"));
-	this.coveredOn = new ReadOnlyObjectWrapper<>(this, "coveredOn", LocalDateTime.ofInstant(ofEpochMilli(jsonObject.getJsonNumber("coveredOn").longValue()), systemDefault()).toLocalDate());
+	this.coveredOn = new ReadOnlyObjectWrapper<>(this, "coveredOn", LocalDate.parse(jsonObject.getString("coveredOn")));
 	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
 	this.type = Type.valueOf(jsonObject.getString("type"));
     }
