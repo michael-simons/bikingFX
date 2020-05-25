@@ -1,69 +1,77 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.web.*?>
-<?import javafx.scene.chart.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0" prefWidth="900.0" stylesheets="@../css/default.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ac.simons.bikingFX.RootController">
-    <children>
-	<HBox fx:id="bikingPicturesContainer" alignment="CENTER_LEFT" maxHeight="113.0" minHeight="113.0" prefHeight="113.0" styleClass="biking-pictures-container" />
-	<TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-	    <tabs>
-		<Tab text="%tab.bikes">
-		    <content>                  
-			<SplitPane dividerPositions="0.66" prefHeight="200.0" prefWidth="200.0">
-			    <items>
-				<TableView fx:id="viewBikes" editable="true" prefHeight="414.0" prefWidth="732.0">
-				    <columns>
-					<TableColumn fx:id="viewBikeName" editable="false" prefWidth="75.0" text="%bike.name" />
-					<TableColumn fx:id="viewBikeBoughtOn" editable="false" prefWidth="101.0" styleClass="col-right" text="%bike.boughtOn" />
-					<TableColumn fx:id="viewBikeDecommissionedOn" prefWidth="49.0" styleClass="col-right" text="%bike.decommissionedOn" />
-					<TableColumn fx:id="viewBikeMilage" prefWidth="300.0" styleClass="col-right" text="%bike.milage" />
-					<TableColumn fx:id="viewBikeColor" prefWidth="113.0" sortable="false" styleClass="col-center" text="%bike.color" />
-				    </columns>
-				    <columnResizePolicy>
-					<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-				    </columnResizePolicy>
-				</TableView>
-				<PieChart fx:id="chartMilagePerBike" prefHeight="414.0" prefWidth="310.0" />
-			    </items>
-			</SplitPane>
-		    </content>
-		</Tab>
-		<Tab text="%tab.gallery">
-		    <content>
-			<TableView fx:id="viewGalleryPictures" prefHeight="200.0" prefWidth="200.0">
-			    <columns>
-				<TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0" resizable="false" text="%galleryPicture.takenOn" />
-				<TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false" text="%galleryPicture.description" />
-				<TableColumn fx:id="viewGalleryPictureImage" maxWidth="800.0" minWidth="400.0" prefWidth="400.0" text="%galleryPicture.image" />
-			    </columns>
-			</TableView>
-		    </content>
-		</Tab>
-            <Tab text="%tab.tracks">
-              <content>
-                  <SplitPane dividerPositions="0.33" layoutX="290.0" layoutY="107.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-                    <items>
-                        <TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" prefHeight="200.0" prefWidth="200.0">
-                          <columns>
-                              <TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0" resizable="false" styleClass="col-right" text="%track.coveredOn" />
-                            <TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name" />
-                          </columns>
-                        </TableView>
-                        <WebView fx:id="viewTrackMap" prefHeight="236.0" prefWidth="900.0" />
-                    </items>
-                  </SplitPane>
-              </content>
-            </Tab>
-	    </tabs>
-	</TabPane>
-    </children>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.WebView?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="560.0"
+	  prefWidth="900.0" stylesheets="@../css/default.css" xmlns="http://javafx.com/javafx/8"
+	  xmlns:fx="http://javafx.com/fxml/1" fx:controller="ac.simons.bikingFX.RootController">
+	<children>
+		<HBox fx:id="bikingPicturesContainer" alignment="CENTER_LEFT" maxHeight="113.0" minHeight="113.0"
+			  prefHeight="113.0" styleClass="biking-pictures-container"/>
+		<TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+			<tabs>
+				<Tab text="%tab.bikes">
+					<content>
+						<SplitPane dividerPositions="0.66" prefHeight="200.0" prefWidth="200.0">
+							<items>
+								<TableView fx:id="viewBikes" editable="true" prefHeight="414.0" prefWidth="732.0">
+									<columns>
+										<TableColumn fx:id="viewBikeName" editable="false" prefWidth="75.0"
+													 text="%bike.name"/>
+										<TableColumn fx:id="viewBikeBoughtOn" editable="false" prefWidth="101.0"
+													 styleClass="col-right" text="%bike.boughtOn"/>
+										<TableColumn fx:id="viewBikeDecommissionedOn" prefWidth="49.0"
+													 styleClass="col-right" text="%bike.decommissionedOn"/>
+										<TableColumn fx:id="viewBikeMilage" prefWidth="300.0" styleClass="col-right"
+													 text="%bike.milage"/>
+										<TableColumn fx:id="viewBikeColor" prefWidth="113.0" sortable="false"
+													 styleClass="col-center" text="%bike.color"/>
+									</columns>
+									<columnResizePolicy>
+										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+									</columnResizePolicy>
+								</TableView>
+								<PieChart fx:id="chartMilagePerBike" prefHeight="414.0" prefWidth="310.0"/>
+							</items>
+						</SplitPane>
+					</content>
+				</Tab>
+				<Tab text="%tab.gallery">
+					<content>
+						<TableView fx:id="viewGalleryPictures" prefHeight="200.0" prefWidth="200.0">
+							<columns>
+								<TableColumn fx:id="viewGalleryPictureTakenOn" editable="false" prefWidth="125.0"
+											 resizable="false" text="%galleryPicture.takenOn"/>
+								<TableColumn fx:id="viewGalleryPictureDescription" prefWidth="708.0" sortable="false"
+											 text="%galleryPicture.description"/>
+								<TableColumn fx:id="viewGalleryPictureImage" maxWidth="800.0" minWidth="400.0"
+											 prefWidth="400.0" text="%galleryPicture.image"/>
+							</columns>
+						</TableView>
+					</content>
+				</Tab>
+				<Tab text="%tab.tracks">
+					<content>
+						<SplitPane dividerPositions="0.33" layoutX="290.0" layoutY="107.0" orientation="VERTICAL"
+								   prefHeight="200.0" prefWidth="160.0">
+							<items>
+								<TableView fx:id="viewTracks" layoutX="-21.0" layoutY="-52.0" prefHeight="200.0"
+										   prefWidth="200.0">
+									<columns>
+										<TableColumn fx:id="viewTrackCoveredOn" editable="false" prefWidth="125.0"
+													 resizable="false" styleClass="col-right" text="%track.coveredOn"/>
+										<TableColumn fx:id="viewTrackName" prefWidth="772.0" text="%track.name"/>
+									</columns>
+								</TableView>
+								<WebView fx:id="viewTrackMap" prefHeight="236.0" prefWidth="900.0"/>
+							</items>
+						</SplitPane>
+					</content>
+				</Tab>
+			</tabs>
+		</TabPane>
+	</children>
 </VBox>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 michael-simons.eu.
+ * Copyright 2014-2020 michael-simons.eu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,81 +15,85 @@
  */
 package ac.simons.bikingFX.bikingPictures;
 
-import java.io.Serializable;
-import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Represents a biking picture.
  *
- * @author Michael J. Simons, 2014-10-15
+ * @author Michael J. Simons
+ * @since 2014-10-15
  */
 public class BikingPicture implements Serializable {
-    private static final long serialVersionUID = 6729385561352721235L;
-    
-    /** Base url for biking pictures as String format string */
-    public static final String BASE_URL_FORMAT_STRING = "https://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
+	private static final long serialVersionUID = 6729385561352721235L;
 
-    /**
-     * URL for the image source
-     */
-    private final Property<String> src;
+	/**
+	 * Base url for biking pictures as String format string
+	 */
+	public static final String BASE_URL_FORMAT_STRING = "https://biking.michael-simons.eu/api/bikingPictures/%d.jpg";
 
-    /**
-     * Arbitrary link to a webpage
-     */
-    private final Property<String> link;
+	/**
+	 * URL for the image source
+	 */
+	private final Property<String> src;
 
-    public BikingPicture(final JsonValue jsonValue) {
-	final JsonObject jsonObject = (JsonObject) jsonValue;
-	
-	this.src = new ReadOnlyObjectWrapper<>(this, "src", String.format(BASE_URL_FORMAT_STRING, jsonObject.getJsonNumber("id").longValue()));
-	this.link = new ReadOnlyObjectWrapper<>(this, "link", jsonObject.getString("link"));
-    }
+	/**
+	 * Arbitrary link to a webpage
+	 */
+	private final Property<String> link;
 
-    public final String getSrc() {
-	return src.getValue();
-    }
+	public BikingPicture(final JsonNode json) {
 
-    public Property<String> srcProperty() {
-	return src;
-    }
-    
-    public final String getLink() {
-	return link.getValue();
-    }
-
-    public Property<String> linkProperty() {
-	return link;
-    }
-
-    @Override
-    public String toString() {
-	return "BikingPicture{" + "src=" + getSrc() + ", link=" + getLink() + '}';
-    }
-    
-    @Override
-    public int hashCode() {
-	int hash = 7;
-	hash = 19 * hash + Objects.hashCode(this.getSrc());
-	return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
+		this.src = new ReadOnlyObjectWrapper<>(this, "src",
+			String.format(BASE_URL_FORMAT_STRING, json.get("id").longValue()));
+		this.link = new ReadOnlyObjectWrapper<>(this, "link", json.get("link").textValue());
 	}
-	if (getClass() != obj.getClass()) {
-	    return false;
+
+	public final String getSrc() {
+		return src.getValue();
 	}
-	final BikingPicture other = (BikingPicture) obj;
-	if (!Objects.equals(this.getSrc(), other.getSrc())) {
-	    return false;
+
+	public Property<String> srcProperty() {
+		return src;
 	}
-	return true;
-    }
+
+	public final String getLink() {
+		return link.getValue();
+	}
+
+	public Property<String> linkProperty() {
+		return link;
+	}
+
+	@Override
+	public String toString() {
+		return "BikingPicture{" + "src=" + getSrc() + ", link=" + getLink() + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 19 * hash + Objects.hashCode(this.getSrc());
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final BikingPicture other = (BikingPicture) obj;
+		if (!Objects.equals(this.getSrc(), other.getSrc())) {
+			return false;
+		}
+		return true;
+	}
 }

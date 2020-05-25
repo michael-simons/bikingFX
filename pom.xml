@@ -1,208 +1,236 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>eu.michael-simons</groupId>
-    <artifactId>bikingFX</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<groupId>eu.michael-simons</groupId>
+	<artifactId>bikingFX</artifactId>
+	<version>0.0.5-SNAPSHOT</version>
+	<packaging>jar</packaging>
 
-    <name>bikingFX</name>     
-    <url>http://biking.michael-simons.eu</url>
-    
-    <inceptionYear>2014</inceptionYear>
-    
-    <developers>
-	<developer>
-	    <name>Michael J. Simons</name>
-	    <email>michael@simons.ac</email>	    
-	</developer>
-    </developers>
+	<name>bikingFX</name>
+	<url>http://biking.michael-simons.eu</url>
 
-    <organization>
-	<name>michael-simons.eu</name>
-	<url>http://michael-simons.eu</url>
-    </organization>
+	<inceptionYear>2014</inceptionYear>
 
-    <licenses>
-	<license>
-	    <name>Apache License, Version 2.0</name>
-	    <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-	</license>
-    </licenses>
+	<organization>
+		<name>michael-simons.eu</name>
+		<url>http://michael-simons.eu</url>
+	</organization>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	
-	<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
-	<build-date>${maven.build.timestamp}</build-date>
-		
-	<java.version>1.8</java.version>
-	
-	<maven.compiler.source>${java.version}</maven.compiler.source>
-	<maven.compiler.target>${java.version}</maven.compiler.target>
-	
-        <mainClass>ac.simons.bikingFX.BikingFX</mainClass>
-    </properties>
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>unpack-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeScope>system</excludeScope>
-                            <excludeGroupIds>junit,org.mockito,org.hamcrest</excludeGroupIds>
-                            <outputDirectory>${project.build.directory}/classes</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>1.3.2</version>
-                <executions>
-                    <execution>
-                        <id>unpack-dependencies</id>
-                        
-                        <phase>package</phase>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <executable>${java.home}/../bin/javapackager</executable>
-                            <arguments>
-                                <argument>-createjar</argument>
-                                <argument>-nocss2bin</argument>
-                                <argument>-appclass</argument>
-                                <argument>${mainClass}</argument>
-                                <argument>-srcdir</argument>
-                                <argument>${project.build.directory}/classes</argument>
-                                <argument>-outdir</argument>
-                                <argument>${project.build.directory}</argument>
-                                <argument>-outfile</argument>
-                                <argument>${project.build.finalName}.jar</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-cli</id>
-                        <goals>
-                            <goal>exec</goal>                            
-                        </goals>
-                        <configuration>
-                            <executable>${java.home}/bin/java</executable>			    
-                            <commandlineArgs>-Djava.util.logging.config.file="${project.build.directory}/classes/logging.dev.properties" ${runfx.args}</commandlineArgs>			    
-                        </configuration>
-                    </execution>		   
-                </executions>  		
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.1</version>
-                <configuration>
-		    <target>${java.version}</target>
-		    <source>${java.version}</source>
-		    <encoding>${project.build.sourceEncoding}</encoding>
-                    <compilerArguments>
-                        <bootclasspath>${sun.boot.class.path}${path.separator}${java.home}/lib/jfxrt.jar</bootclasspath>
-                    </compilerArguments>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.16</version>
-                <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${java.home}/lib/jfxrt.jar</additionalClasspathElement>
-                    </additionalClasspathElements>
-                </configuration>
-            </plugin>
-        </plugins>	
-    </build>
-    <profiles>
-	<profile>
-	    <id>installer</id>
-	    <activation>        
-		<property>
-		    <name>createInstaller</name>
-		</property>
-	    </activation>
-	    <build>
+	<developers>
+		<developer>
+			<name>Michael J. Simons</name>
+			<email>michael@simons.ac</email>
+		</developer>
+	</developers>
+
+	<properties>
+		<build-date>${maven.build.timestamp}</build-date>
+		<exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+		<jackson-bom.version>2.11.0</jackson-bom.version>
+
+		<java.version>14</java.version>
+		<javafx-maven-plugin.version>0.0.4</javafx-maven-plugin.version>
+
+		<mainClass>bikingFX/ac.simons.bikingFX.BikingFX</mainClass>
+		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.0.0-M4</maven-surefire-plugin.version>
+
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<sortpom-maven-plugin.version>2.8.0</sortpom-maven-plugin.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson-bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jdk8</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-controls</artifactId>
+			<version>${java.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-fxml</artifactId>
+			<version>${java.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openjfx</groupId>
+			<artifactId>javafx-web</artifactId>
+			<version>${java.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>com.github.ekryd.sortpom</groupId>
+					<artifactId>sortpom-maven-plugin</artifactId>
+					<version>${sortpom-maven-plugin.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<keepBlankLines>true</keepBlankLines>
+						<nrOfIndentSpace>-1</nrOfIndentSpace>
+						<sortProperties>true</sortProperties>
+						<sortDependencies>groupId,artifactId</sortDependencies>
+						<createBackupFile>false</createBackupFile>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.openjfx</groupId>
+					<artifactId>javafx-maven-plugin</artifactId>
+					<version>${javafx-maven-plugin.version}</version>
+					<configuration>
+						<mainClass>bikingFX/ac.simons.bikingFX.BikingFX</mainClass>
+						<jlinkImageName>bikingFX</jlinkImageName>
+						<launcher>launcher</launcher>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
-		    <plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>exec-maven-plugin</artifactId>
-			<version>1.3.2</version>
-			<executions>                  
-			    <execution>
-				<id>create-native</id>
-				<phase>package</phase>
-				<goals>
-				    <goal>exec</goal>
-				</goals>
-				<configuration>        
-				    <executable>${java.home}/../bin/javapackager</executable>      
-				    <arguments>					
-					<argument>-deploy</argument>					
-					<argument>-title</argument>
-					<argument>${project.name}</argument>
-					<argument>-vendor</argument>
-					<argument>${project.organization.name}</argument>
-					<argument>-BappVersion=${project.version}</argument>					
-					<argument>-native</argument>				
-					<argument>installer</argument>
-					<argument>-Bruntime=${java.home}</argument>
-					<argument>-appclass</argument>
-					<argument>${mainClass}</argument>					
-					<argument>-srcfiles</argument>				
-					<argument>${project.build.directory}/${project.build.finalName}.jar</argument>
-					<argument>-outdir</argument>
-					<argument>${project.build.directory}</argument>
-					<argument>-outfile</argument>
-					<argument>${project.artifactId}</argument>
-					<argument>-v</argument>
-				    </arguments>
-				</configuration>
-			    </execution>
-			</executions>  		
-		    </plugin>
+			<plugin>
+				<groupId>com.github.ekryd.sortpom</groupId>
+				<artifactId>sortpom-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>sort</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<groupId>org.openjfx</groupId>
+				<artifactId>javafx-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+			</plugin>
 		</plugins>
-	    </build>
-	</profile>
-    </profiles>
-    
-    <dependencies>
-	<!-- JSONP Api -->
-	<dependency>
-	    <groupId>javax.json</groupId>
-	    <artifactId>javax.json-api</artifactId>
-	    <version>1.0</version>
-	</dependency>
-	<!-- Actual JSONP implementation, not needed when running on a JEE 7 server -->
-	<dependency>
-	    <groupId>org.glassfish</groupId>
-	    <artifactId>javax.json</artifactId>
-	    <version>1.0.4</version>
-	</dependency>	
-	
-	<!-- Testing -->
-	<dependency>
-	    <groupId>junit</groupId>
-	    <artifactId>junit</artifactId>
-	    <version>4.10</version>
-	    <scope>test</scope>
-	</dependency>
-    </dependencies>
+	</build>
+	<profiles>
+		<profile>
+			<id>installer</id>
+			<activation>
+				<property>
+					<name>createInstaller</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.openjfx</groupId>
+						<artifactId>javafx-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jlink</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<version>${exec-maven-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>create-app-image</id>
+								<phase>package</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>${java.home}/bin/jpackage</executable>
+									<arguments>
+										<argument>-n</argument>
+										<argument>bikingFX</argument>
+										<argument>--type</argument>
+										<argument>app-image</argument>
+										<argument>-m</argument>
+										<argument>${mainClass}</argument>
+										<argument>--runtime-image</argument>
+										<argument>${project.build.directory}/bikingFX</argument>
+										<argument>--dest</argument>
+										<argument>${project.build.directory}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+							<execution>
+								<id>create-runtime-image</id>
+								<phase>package</phase>
+								<goals>
+									<goal>exec</goal>
+								</goals>
+								<configuration>
+									<executable>${java.home}/bin/jpackage</executable>
+									<arguments>
+										<argument>-n</argument>
+										<argument>bikingFX</argument>
+										<argument>--app-image</argument>
+										<argument>${project.build.directory}/bikingFX.app</argument>
+										<argument>--dest</argument>
+										<argument>${project.build.directory}</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

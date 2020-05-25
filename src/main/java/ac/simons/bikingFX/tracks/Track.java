@@ -15,97 +15,93 @@
  */
 package ac.simons.bikingFX.tracks;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javax.json.JsonObject;
-import javax.json.JsonValue;
 
-import static java.time.Instant.ofEpochMilli;
-import static java.time.ZoneId.systemDefault;
+import java.time.LocalDate;
+import java.util.Objects;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * @author Michael J. Simons
- *
  * @since 2014-10-27
  */
 public class Track {
 
-    public enum Type {
+	public enum Type {
 
-	biking, running
-    }
-    
-    /**
-     * (Pretty) ID is needed for URL construction
-     */
-    private final Property<String> id;
-
-    private final Property<LocalDate> coveredOn;
-
-    private final Property<String> name;
-         
-    private final Type type;
-
-    public Track(final JsonValue jsonValue) {
-	final JsonObject jsonObject = (JsonObject) jsonValue;
-
-	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getString("id"));
-	this.coveredOn = new ReadOnlyObjectWrapper<>(this, "coveredOn", LocalDate.parse(jsonObject.getString("coveredOn")));
-	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
-	this.type = Type.valueOf(jsonObject.getString("type"));
-    }
-
-    public final String getId() {
-	return id.getValue();
-    }
-
-    public Property<String> propertyId() {
-	return id;
-    }
-
-    public final LocalDate getCoveredOn() {
-	return coveredOn.getValue();
-    }
-
-    public Property<LocalDate> coveredOnProperty() {
-	return coveredOn;
-    }
-
-    public final String getName() {
-	return name.getValue();
-    }
-
-    public Property<String> nameProperty() {
-	return name;
-    }
-
-    public final Type getType() {
-	return type;
-    }
-    
-    @Override
-    public int hashCode() {
-	int hash = 7;
-	hash = 41 * hash + Objects.hashCode(this.getCoveredOn());
-	hash = 41 * hash + Objects.hashCode(this.getName());
-	return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
+		biking, running
 	}
-	if (getClass() != obj.getClass()) {
-	    return false;
+
+	/**
+	 * (Pretty) ID is needed for URL construction
+	 */
+	private final Property<String> id;
+
+	private final Property<LocalDate> coveredOn;
+
+	private final Property<String> name;
+
+	private final Type type;
+
+	public Track(final JsonNode json) {
+
+		this.id = new ReadOnlyObjectWrapper<>(this, "id", json.get("id").textValue());
+		this.coveredOn = new ReadOnlyObjectWrapper<>(this, "coveredOn",
+			LocalDate.parse(json.get("coveredOn").textValue()));
+		this.name = new ReadOnlyObjectWrapper<>(this, "name", json.get("name").textValue());
+		this.type = Type.valueOf(json.get("type").textValue());
 	}
-	final Track other = (Track) obj;
-	if (!Objects.equals(this.getCoveredOn(), other.getCoveredOn())) {
-	    return false;
+
+	public final String getId() {
+		return id.getValue();
 	}
-	return Objects.equals(this.getName(), other.getName());
-    }
+
+	public Property<String> propertyId() {
+		return id;
+	}
+
+	public final LocalDate getCoveredOn() {
+		return coveredOn.getValue();
+	}
+
+	public Property<LocalDate> coveredOnProperty() {
+		return coveredOn;
+	}
+
+	public final String getName() {
+		return name.getValue();
+	}
+
+	public Property<String> nameProperty() {
+		return name;
+	}
+
+	public final Type getType() {
+		return type;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 41 * hash + Objects.hashCode(this.getCoveredOn());
+		hash = 41 * hash + Objects.hashCode(this.getName());
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Track other = (Track) obj;
+		if (!Objects.equals(this.getCoveredOn(), other.getCoveredOn())) {
+			return false;
+		}
+		return Objects.equals(this.getName(), other.getName());
+	}
 }

@@ -15,130 +15,130 @@
  */
 package ac.simons.bikingFX.bikes;
 
-import java.time.LocalDate;
-import java.util.Objects;
 import javafx.beans.property.Property;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.paint.Color;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 
-import static javax.json.JsonValue.ValueType.NULL;
+import java.time.LocalDate;
+import java.util.Objects;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Represents an updateable Bike in my collection of bikes.
  *
  * @author Michael J. Simons
- *
  * @since 2014-10-16
  */
 public class Bike {
 
-    /** ID is needed for URL construction */
-    private final Property<Integer> id;
-    
-    private final Property<String> name;
+	/**
+	 * ID is needed for URL construction
+	 */
+	private final Property<Integer> id;
 
-    private final Property<Color> color;
+	private final Property<String> name;
 
-    private final Property<LocalDate> boughtOn;
+	private final Property<Color> color;
 
-    private final Property<LocalDate> decommissionedOn;
+	private final Property<LocalDate> boughtOn;
 
-    private final Property<Integer> milage;
+	private final Property<LocalDate> decommissionedOn;
 
-    public Bike(final JsonValue jsonValue) {
-	final JsonObject jsonObject = (JsonObject) jsonValue;
+	private final Property<Integer> milage;
 
-	this.id = new ReadOnlyObjectWrapper<>(this, "id", jsonObject.getInt("id"));
-	this.name = new ReadOnlyObjectWrapper<>(this, "name", jsonObject.getString("name"));
-	this.color = new SimpleObjectProperty<>(this, "color", Color.web(jsonObject.getString("color")));
-	this.boughtOn = new ReadOnlyObjectWrapper<>(this, "boughtOn", LocalDate.parse(jsonObject.getString("boughtOn")));
-	final JsonValue decommissionedOn = jsonObject.get("decommissionedOn");
-	this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn", decommissionedOn.getValueType() == NULL ? null : LocalDate.parse(((JsonString)decommissionedOn).getString()));
-	final JsonValue milage = jsonObject.get("lastMilage");
-	this.milage = new SimpleObjectProperty<>(this, "milage", milage.getValueType() == NULL ? 0 : ((JsonNumber) milage).intValue());
-    }
-    
-    public final Integer getId() {
-	return id.getValue();
-    }
-    
-    public Property<Integer> propertyId() {
-	return id;
-    }
-
-    public final String getName() {
-	return name.getValue();
-    }
-
-    public Property<String> nameProperty() {
-	return name;
-    }
-
-    public final Color getColor() {
-	return color.getValue();
-    }
-
-    public final void setColor(Color color) {
-	this.color.setValue(color);
-    }
-
-    public Property<Color> colorProperty() {
-	return color;
-    }
-
-    public final LocalDate getBoughtOn() {
-	return boughtOn.getValue();
-    }
-    
-    public Property<LocalDate> boughtOnProperty() {
-	return boughtOn;
-    }
-
-    public final LocalDate getDecommissionedOn() {
-	return decommissionedOn.getValue();
-    }
-
-    public final void setDecommissionedOn(LocalDate decommissionedOn) {
-	this.decommissionedOn.setValue(decommissionedOn);
-    }
-
-    public Property<LocalDate> decommissionedOnProperty() {
-	return decommissionedOn;
-    }
-
-    public final Integer getMilage() {
-	return milage.getValue();
-    }
-
-    public final void setMilage(Integer milage) {
-	this.milage.setValue(milage);
-    }
-
-    public Property<Integer> milageProperty() {
-	return milage;
-    }
-
-    @Override
-    public int hashCode() {
-	int hash = 7;
-	hash = 31 * hash + Objects.hashCode(this.getName());
-	return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (obj == null) {
-	    return false;
+	public Bike(final JsonNode json) {
+		this.id = new ReadOnlyObjectWrapper<>(this, "id", json.get("id").intValue());
+		this.name = new ReadOnlyObjectWrapper<>(this, "name", json.get("name").textValue());
+		this.color = new SimpleObjectProperty<>(this, "color", Color.web(json.get("color").textValue()));
+		this.boughtOn = new ReadOnlyObjectWrapper<>(this, "boughtOn",
+			LocalDate.parse(json.get("boughtOn").asText()));
+		final JsonNode decommissionedOn = json.get("decommissionedOn");
+		this.decommissionedOn = new SimpleObjectProperty<>(this, "decommissionedOn",
+			decommissionedOn.isNull() ? null :
+				LocalDate.parse(decommissionedOn.asText()));
+		final JsonNode milage = json.get("lastMilage");
+		this.milage = new SimpleObjectProperty<>(this, "milage",
+			milage.isNull() ? 0 : milage.intValue());
 	}
-	if (getClass() != obj.getClass()) {
-	    return false;
+
+	public final Integer getId() {
+		return id.getValue();
 	}
-	final Bike other = (Bike) obj;
-	return Objects.equals(this.getName(), other.getName());
-    }
+
+	public Property<Integer> propertyId() {
+		return id;
+	}
+
+	public final String getName() {
+		return name.getValue();
+	}
+
+	public Property<String> nameProperty() {
+		return name;
+	}
+
+	public final Color getColor() {
+		return color.getValue();
+	}
+
+	public final void setColor(Color color) {
+		this.color.setValue(color);
+	}
+
+	public Property<Color> colorProperty() {
+		return color;
+	}
+
+	public final LocalDate getBoughtOn() {
+		return boughtOn.getValue();
+	}
+
+	public Property<LocalDate> boughtOnProperty() {
+		return boughtOn;
+	}
+
+	public final LocalDate getDecommissionedOn() {
+		return decommissionedOn.getValue();
+	}
+
+	public final void setDecommissionedOn(LocalDate decommissionedOn) {
+		this.decommissionedOn.setValue(decommissionedOn);
+	}
+
+	public Property<LocalDate> decommissionedOnProperty() {
+		return decommissionedOn;
+	}
+
+	public final Integer getMilage() {
+		return milage.getValue();
+	}
+
+	public final void setMilage(Integer milage) {
+		this.milage.setValue(milage);
+	}
+
+	public Property<Integer> milageProperty() {
+		return milage;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 7;
+		hash = 31 * hash + Objects.hashCode(this.getName());
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		final Bike other = (Bike) obj;
+		return Objects.equals(this.getName(), other.getName());
+	}
 }

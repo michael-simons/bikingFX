@@ -1,9 +1,9 @@
 {
-    "id": 1,
-    "name": "MTB",
-    "color": "CCCCCC",
-    "boughtOn":"2007-08-02",
-    "decommissionedOn":"2012-09-30",
-    "lastMilage": 6451,
-    "milage": 3450
+  "id": 1,
+  "name": "MTB",
+  "color": "CCCCCC",
+  "boughtOn": "2007-08-02",
+  "decommissionedOn": "2012-09-30",
+  "lastMilage": 6451,
+  "milage": 3450
 }
