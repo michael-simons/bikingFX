@@ -2,3 +2,12 @@ target/
 .DS_Store
 var/
 /application.properties
+/activemq-data/
+/nbproject/
+Thumbs.db
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
