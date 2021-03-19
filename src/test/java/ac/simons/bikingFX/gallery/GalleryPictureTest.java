@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2020 michael-simons.eu.
+ * Copyright 2014-2021 michael-simons.eu.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package ac.simons.bikingFX.gallery;
 import java.io.IOException;
 import java.time.LocalDate;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Michael J. Simons
  * @since 2014-10-18
  */
-public class GalleryPictureTest {
+class GalleryPictureTest {
 
 	@Test
 	public void factoryMethodShouldWork() throws IOException {
@@ -36,9 +36,9 @@ public class GalleryPictureTest {
 		final JsonNode json = new ObjectMapper()
 			.readTree(GalleryPictureTest.class.getResourceAsStream("/gallery/singleGalleryPicture.json"));
 		final GalleryPicture galleryPicture = new GalleryPicture(json);
-		Assert.assertEquals(LocalDate.of(2009, 4, 10), galleryPicture.getTakenOn());
-		Assert.assertEquals("fe706cbe58f3da8c59d051bba5ede2d2.jpg", galleryPicture.getFilename());
-		Assert.assertEquals("Auf der Festung Königstein mit Blick auf die Elbe.", galleryPicture.getDescription());
+		Assertions.assertEquals(LocalDate.of(2009, 4, 10), galleryPicture.getTakenOn());
+		Assertions.assertEquals("fe706cbe58f3da8c59d051bba5ede2d2.jpg", galleryPicture.getFilename());
+		Assertions.assertEquals("Auf der Festung Königstein mit Blick auf die Elbe.", galleryPicture.getDescription());
 	}
 
 }
