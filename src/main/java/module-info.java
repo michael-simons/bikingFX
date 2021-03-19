@@ -7,6 +7,7 @@ module bikingFX {
 	requires java.logging;
 	requires java.net.http;
 	requires java.prefs;
+	requires jdk.crypto.ec;
 
 	requires javafx.controls;
 	requires javafx.fxml;
