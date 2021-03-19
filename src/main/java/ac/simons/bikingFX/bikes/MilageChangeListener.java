@@ -15,9 +15,6 @@
  */
 package ac.simons.bikingFX.bikes;
 
-import static java.time.Instant.*;
-import static java.time.ZoneId.*;
-
 import ac.simons.bikingFX.BikingFX;
 import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
@@ -30,7 +27,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Base64;

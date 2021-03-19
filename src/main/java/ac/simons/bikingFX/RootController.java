@@ -242,7 +242,7 @@ public class RootController implements Initializable {
 			text.textProperty().bind(cell.itemProperty());
 			return cell;
 		});
-		// Bind prefered width of column to width of table minus the first column to fill up the remaining space.
+		// Bind preferred width of column to width of table minus the first column to fill up the remaining space.
 		viewGalleryPictureDescription.prefWidthProperty().bind(
 			viewGalleryPictures.widthProperty()
 				.subtract(viewGalleryPictureTakenOn.prefWidthProperty())
@@ -251,7 +251,7 @@ public class RootController implements Initializable {
 
 		viewGalleryPictureImage.setCellValueFactory(new PropertyValueFactory<>("id"));
 		viewGalleryPictureImage.setCellFactory(GalleryPictureTableCell::new);
-		// Fill the remainig space of the table
+		// Fill the remaining space of the table
 		viewGalleryPictureImage.prefWidthProperty().bind(
 			viewGalleryPictures.widthProperty()
 				.subtract(viewGalleryPictureTakenOn.widthProperty())
@@ -497,7 +497,12 @@ public class RootController implements Initializable {
 					throw new UncheckedIOException(e);
 				}
 			})
-			.whenComplete((f, e) -> Platform.runLater(() -> rv.addAll(f)));
+			.whenComplete((f, e) -> {
+				if(e != null) {
+					e.printStackTrace();
+				}
+				Platform.runLater(() -> rv.addAll(f));
+			});
 
 		return rv;
 	}
