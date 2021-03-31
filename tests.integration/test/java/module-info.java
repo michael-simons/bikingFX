@@ -5,9 +5,5 @@ open module tests.integration {
 	requires com.fasterxml.jackson.datatype.jdk8;
 	requires com.fasterxml.jackson.datatype.jsr310;
 
-	requires javafx.controls;
-	requires javafx.fxml;
-	requires javafx.web;
-
 	requires org.junit.jupiter;
 }
