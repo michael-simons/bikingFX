@@ -35,6 +35,8 @@ import com.github.sormuras.bach.project.JavaStyle;
 	format = JavaStyle.GOOGLE,
 	launcher = @Launcher(command = "bikingFX", module = "ac.simons.bikingFX", mainClass = "ac.simons.bikingFX.Application"),
 	tools = @Tools(limit = { "javac", "jar", "junit", "jlink", "jpackage" }),
+	modules = "*/main/java",
+	testModules = "*/test/java",
 	tweaks = {
 		@Tweak(tool = "javac", option = "-encoding", value = "UTF-8"),
 		@Tweak(tool = "javac", option = "-g"),
