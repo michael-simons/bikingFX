@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-import com.github.sormuras.bach.Bach;
 import com.github.sormuras.bach.ProjectInfo;
-import com.github.sormuras.bach.ProjectInfo.ExternalLibrary;
-import com.github.sormuras.bach.ProjectInfo.ExternalModule;
-import com.github.sormuras.bach.ProjectInfo.Launcher;
-import com.github.sormuras.bach.ProjectInfo.LibraryName;
-import com.github.sormuras.bach.ProjectInfo.Tools;
-import com.github.sormuras.bach.ProjectInfo.Tweak;
+import com.github.sormuras.bach.ProjectInfo.*;
 import com.github.sormuras.bach.project.CodeStyle;
 
 /** @author Michael J. Simons */
@@ -29,7 +23,7 @@ import com.github.sormuras.bach.project.CodeStyle;
     name = "bikingFX",
     version = "2021.0.0",
     options =
-        @ProjectInfo.Options(
+        @Options(
             compileModulesForJavaRelease = 16,
             formatSourceFilesWithCodeStyle = CodeStyle.GOOGLE,
             launcher =
@@ -39,7 +33,7 @@ import com.github.sormuras.bach.project.CodeStyle;
                     mainClass = "ac.simons.bikingFX.Application"),
             tools = @Tools(limit = {"javac", "jar", "junit", "jlink", "jpackage"})),
     main =
-        @ProjectInfo.MainSpace(
+        @MainSpace(
             modules = "*/main/java",
             tweaks = {
               @Tweak(tool = "javac", option = "-encoding", value = "UTF-8"),
@@ -48,14 +42,14 @@ import com.github.sormuras.bach.project.CodeStyle;
               @Tweak(tool = "javac", option = "-Xlint")
             }),
     test =
-        @ProjectInfo.TestSpace(
+        @TestSpace(
             modules = "*/test/java",
             tweaks = {
               @Tweak(tool = "javac", option = "-encoding", value = "UTF-8"),
               @Tweak(tool = "junit", option = "--fail-if-no-tests")
             }),
     libraries =
-        @ProjectInfo.Libraries(
+        @Libraries(
             externalModules = {
               @ExternalModule(
                   named = "com.fasterxml.jackson.core",
@@ -79,5 +73,5 @@ import com.github.sormuras.bach.project.CodeStyle;
             }))
 module bach.info {
   requires com.github.sormuras.bach;
-  provides Bach.OnTestsSuccessful with bach.info.BikingBach;
+  provides com.github.sormuras.bach.Bach.OnTestsSuccessful with bach.info.BikingBach;
 }
