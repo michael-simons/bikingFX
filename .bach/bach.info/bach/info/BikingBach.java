@@ -17,43 +17,33 @@ package bach.info;
 
 import com.github.sormuras.bach.Bach;
 import com.github.sormuras.bach.Command;
-import com.github.sormuras.bach.Options;
 import com.github.sormuras.bach.ProjectInfo;
 
 /**
  * @author Michael J. Simons
  */
-public class BikingBach extends Bach {
-
-	public static Provider<BikingBach> provider() {
-		return BikingBach::new;
-	}
-
-	private BikingBach(Options options) {
-		super(options);
-	}
+public class BikingBach implements Bach.OnTestsSuccessful {
 
 	@Override
-	public void buildProjectTestSpace() {
+	public void onTestsSuccessful(Event event) {
+		var bach = event.bach();
+		var project = bach.project();
+		var distDir = project.settings().folders().workspace("dist");
 
-		super.buildProjectTestSpace();
-
-		var projectName = project().name();
-		var distDir = ProjectInfo.WORKSPACE + "/dist";
-
+		var launcher = project.spaces().main().launcher().orElseThrow();
 		var createAppImage = Command.of("jpackage")
-			.add("--name", projectName)
-			.add("--type", "app-image")
-			.add("--module", options().info().map(i -> i.launcher().module() + "/" + i.launcher().mainClass()).get())
-			.add("--runtime-image", ProjectInfo.WORKSPACE + "/image")
-			.add("--dest", distDir);
-		bach().run(createAppImage);
+			.with("--name", project.name())
+			.with("--type", "app-image")
+			.with("--module", launcher.module() + "/" + launcher.main())
+			.with("--runtime-image", ProjectInfo.WORKSPACE + "/image")
+			.with("--dest", distDir);
+		bach.run(createAppImage);
 
 		var createAppPackage = Command.of("jpackage")
-			.add("--name", projectName)
-			.add("--app-image", distDir)
-			.add("--app-version", project().version())
-			.add("--dest", distDir);
-		bach().run(createAppPackage);
+			.with("--name", project.name())
+			.with("--app-image", distDir)
+			.with("--app-version", project.version())
+			.with("--dest", distDir);
+		bach.run(createAppPackage);
 	}
 }
