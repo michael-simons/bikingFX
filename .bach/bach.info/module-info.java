@@ -50,6 +50,7 @@ import com.github.sormuras.bach.project.CodeStyle;
             }),
     libraries =
         @Libraries(
+            requires = "org.junit.platform.console",
             externalModules = {
               @ExternalModule(
                   name = "com.fasterxml.jackson.core",
