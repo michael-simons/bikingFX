@@ -52,24 +52,24 @@ import com.github.sormuras.bach.project.CodeStyle;
         @Libraries(
             externalModules = {
               @ExternalModule(
-                  named = "com.fasterxml.jackson.core",
-                  via = "com.fasterxml.jackson.core:jackson-core:2.12.2"),
+                  name = "com.fasterxml.jackson.core",
+                  link = "com.fasterxml.jackson.core:jackson-core:2.12.2"),
               @ExternalModule(
-                  named = "com.fasterxml.jackson.annotation",
-                  via = "com.fasterxml.jackson.core:jackson-annotations:2.12.2"),
+                  name = "com.fasterxml.jackson.annotation",
+                  link = "com.fasterxml.jackson.core:jackson-annotations:2.12.2"),
               @ExternalModule(
-                  named = "com.fasterxml.jackson.databind",
-                  via = "com.fasterxml.jackson.core:jackson-databind:2.12.2"),
+                  name = "com.fasterxml.jackson.databind",
+                  link = "com.fasterxml.jackson.core:jackson-databind:2.12.2"),
               @ExternalModule(
-                  named = "com.fasterxml.jackson.datatype.jdk8",
-                  via = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.2"),
+                  name = "com.fasterxml.jackson.datatype.jdk8",
+                  link = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.12.2"),
               @ExternalModule(
-                  named = "com.fasterxml.jackson.datatype.jsr310",
-                  via = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2")
+                  name = "com.fasterxml.jackson.datatype.jsr310",
+                  link = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.2")
             },
             externalLibraries = {
-              @ExternalLibrary(named = LibraryName.JAVAFX, version = "16"),
-              @ExternalLibrary(named = LibraryName.JUNIT, version = "5.7.1"),
+              @ExternalLibrary(name = LibraryName.JAVAFX, version = "16"),
+              @ExternalLibrary(name = LibraryName.JUNIT, version = "5.7.1"),
             }))
 module bach.info {
   requires com.github.sormuras.bach;
