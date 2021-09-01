@@ -7,25 +7,23 @@ This is a little companion project for [biking2][1], which is live right at [bik
 The source code is presented as is, the application maybe has no real use for other people than me, but I think it shows some of things that are possible with and very easy to create with JavaFX.
 
 This application is modularized for a time after JDK 8 and uses the ["bach"][5] build tool. 
-It is included with the source code. All you have to do is bring JDK 16.
+It is included with the source code. All you have to do is bring JDK 17.
 
 ```
-.bach/bin/bach clean build # Compile, test and packages the application
-.bach/bin/bach info # prints out information about the build  
-.bach/bin/bach --help # prints out a help what you can do with bach
+.bach/bin/bach build # Compile, test and packages the application
 ```
 
 _bach_ orchestrates tools that are available in the JDK by default.
 
-_bach_ lives in `.bach` and it uses plain Java modules to describe the build. 
-This is the one applied here: [.bach/bach.info/module-info.java](https://github.com/michael-simons/bikingFX/blob/master/.bach/bach.info/module-info.java)
+_bach_ lives in `.bach/bin` and it executes plain Java programs that perform the build and other tasks. 
+This is the build program executed here: [.bach/src/build.java](.bach/src/build.java)
 
-I put the tools I want to use in _bachs_ include list:
+The tools used are:
 
 * `javac` compiles Java sources
 * `jar` packages up all kinds of things (class files, resources etc.)
 * `jlink` creates a customized runtime image (this application and a VM)
-* `jpackage` creates an host specific executable from the above image as well as an installer.
+* `jpackage` creates a host specific executable from the above image as well as an installer.
 
 `junit` sticks out, as it is not a JDK tool but another module that is used via Java's [ToolProvider][6]. "What?" I hear you saying, JUnit is a library?
 Yes, but it also comes with a console runner implementing `ToolProvider` and thus being usable by _bach_.
